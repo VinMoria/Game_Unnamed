@@ -6,16 +6,17 @@ public class ActorComponent
 {
     public ActorRoot actor;
 
-    void Init(ActorRoot actor, string actorPath) {
+    public virtual void Init(ActorRoot actor, string actorPath) {
         this.actor = actor;
     }
 
-    void Prepare() {
+    public virtual void Prepare() {
     }
 
-    void UnInit() {
+    public virtual void UnInit() {
+        this.actor = null;
     }
 
-    void Update(float deltaTime) {
+    public virtual void Update(float deltaTime) {
     }
 }

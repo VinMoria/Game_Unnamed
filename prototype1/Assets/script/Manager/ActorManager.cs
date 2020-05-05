@@ -14,7 +14,7 @@ public class ActorManager : Singleton<ActorManager> {
 
 
     public ActorRoot CreateActor(string actorPath) {
-        ActorRoot newActor = new ActorRoot();
+        ActorRoot newActor = new ActorRoot(actorPath);
         newActor.objId = curObjId;
         newActor.Init();
         newActor.Prepare();
