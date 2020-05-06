@@ -30,4 +30,20 @@ public class ActorManager : Singleton<ActorManager> {
 
         return actor;
     }
+
+    public void Update(float deltaTime)
+    {
+        foreach (var actor in actorDict.Values)
+        {
+            actor.Update(deltaTime);
+        }
+    }
+
+    public void FixedUpdate(float fixedDeltaTime)
+    {
+        foreach (var actor in actorDict.Values)
+        {
+            actor.FixedUpdate(fixedDeltaTime);
+        }
+    }
 }

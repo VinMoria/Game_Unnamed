@@ -5,22 +5,19 @@ using System;
 
 public enum enGameEvent {
     None,
-    LeftArrowEvent,
-    RightArrowEvent,
-    EnterDoorAreaEvent,
-    EnterDoorActionEvent,
-    SpaceEvent,
-    ActorOnGroundEvent,
-    ActorLeaveGroundEvent,
-    ActorEnterDeadZoneEvent,
-    AcotrDeadEvent,
-    ActorSpawnEvent,
-    MoveEvent,
-    EnterTriggerArea,
-    LeaveTriggerArea,
+    MoveAxisEvent,
+    JumpBtnEvent,
     Max,
 }
 
+public struct MoveAxisEventParam
+{
+    public float value;
+    public MoveAxisEventParam(float _value)
+    {
+        value = _value;
+    }
+}
 
 public struct CommonTriggerAreaEventParam {
     public int actorId;

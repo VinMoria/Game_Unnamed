@@ -47,4 +47,15 @@ public class ActorLinkerComponent : ActorComponent {
         Debug.LogError("Player Obj is NULL");
         return Vector3.zero;
     }
+
+    public Transform GetTransform()
+    {
+        if (this.actorObj != null)
+        {
+            return this.actorObj.transform;
+        }
+
+        Debug.LogError("Player Obj is NULL");
+        return null;
+    }
 }
