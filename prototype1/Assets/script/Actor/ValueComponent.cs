@@ -9,16 +9,21 @@ public class ValueComponent : ActorComponent
 {
     private const float tempMoveSpeed = 600.0f;
     private const float tempJumpForce = 20.0f;
+    private const float tempGravityScale = 6.0f;
+    private const float tempDashSpeed = 1700.0f;
 
     private float moveSpeed = 0.0f;
     private float jumpForce = 0.0f;
+    private float gravityScale = 0.0f;
+    private float dashSpeed = 0.0f;
 
     public override void Prepare()
     {
         base.Prepare();
-
         moveSpeed = tempMoveSpeed;
         jumpForce = tempJumpForce;
+        gravityScale = tempGravityScale;
+        dashSpeed = tempDashSpeed;
     }
 
     
@@ -45,6 +50,32 @@ public class ValueComponent : ActorComponent
         set
         {
             jumpForce = value;
+        }
+    }
+
+    public float GravityScale
+    {
+        get
+        {
+            return gravityScale;
+        }
+
+        set
+        {
+            gravityScale = value;
+        }
+    }
+
+    public float DashSpeed
+    {
+        get
+        {
+            return dashSpeed;
+        }
+
+        set
+        {
+            dashSpeed = value;
         }
     }
 }

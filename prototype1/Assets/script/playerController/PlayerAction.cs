@@ -5,7 +5,6 @@ using UnityEngine;
 public class PlayerAction : MonoBehaviour
 {
     InputController ic;
-    private int startTime,endTime;
     InputState inputState;
     private Rigidbody2D player;
     public GameObject mainController;
@@ -43,7 +42,6 @@ public class PlayerAction : MonoBehaviour
         if(teleportPressed){
             teleportPressed = false;
             inputState.setState("action");
-            startTime = System.Environment.TickCount;
             player.gravityScale = 0;
             if(player.transform.localScale.x>0){
                 player.velocity = new Vector2(TELEPORT_SPEED*Time.deltaTime, 0);

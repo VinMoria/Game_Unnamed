@@ -5,11 +5,14 @@ using UnityEngine;
 public class InputManager : Singleton<InputManager>
 {
     private float moveAxisVal = 0;
-    public bool jumpBtnPressed = false;
+    public Dictionary<string, bool> btnsPressed = new Dictionary<string, bool>();
 
     public void InitManager()
     {
-
+        btnsPressed.Add("btn0", false);
+        btnsPressed.Add("btn1", false);
+        btnsPressed.Add("btn2", false);
+        btnsPressed.Add("btn3", false);
     }
 
     public void Update(float delta)
@@ -24,11 +27,18 @@ public class InputManager : Singleton<InputManager>
             CGameEventManager.Instance.SendEvent<MoveAxisEventParam>(enGameEvent.MoveAxisEvent, ref param);
         }
 
-        if(Input.GetButtonDown("btn0")){
-            jumpBtnPressed = true;
+        BtnDownTrigger("btn0");
+        BtnDownTrigger("btn1");
+        BtnDownTrigger("btn2");
+        BtnDownTrigger("btn3");
+    }
+
+    private void BtnDownTrigger(string btnName){
+        if(Input.GetButtonDown(btnName)){
+            btnsPressed[btnName] = true;
         }
-        if(Input.GetButtonUp("btn0")){
-            jumpBtnPressed = false;
+        if(Input.GetButtonUp(btnName)){
+            btnsPressed[btnName] = false;
         }
     }
 }

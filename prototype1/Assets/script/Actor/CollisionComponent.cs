@@ -5,13 +5,15 @@ using UnityEngine;
 public class CollisionComponent : ActorComponent
 {
     private bool onGround;
-    private bool airJump;
+    private Dictionary<string, bool> airActions = new Dictionary<string, bool>();
     private Transform groundCheck;
     private LayerMask ground;
     public override void Init(ActorRoot actor, string actorPath){
         base.Init(actor, actorPath);
         groundCheck = actor.linkerComponent.groundCheck;
         ground = LayerMask.NameToLayer("ground");
+        airActions.Add("airJump", false);
+        airActions.Add("airDash", false);
     }
 
     public override void Prepare(){
@@ -28,11 +30,10 @@ public class CollisionComponent : ActorComponent
 
     public override void FixedUpdate(float fixedDeltaTime){
         base.FixedUpdate(fixedDeltaTime);
-        onGround = Physics2D.OverlapCircle(groundCheck.position, 0.1f, ground);
-        Debug.Log(onGround);
+        onGround = Physics2D.OverlapCircle(groundCheck.position, 0.1f, 1<<ground);
         if(onGround){
-            //Debug.Log("onGround");
-            airJump = true;
+            airActions["airJump"] = true;
+            airActions["airDash"] = true;
         }
     }
 
@@ -40,11 +41,11 @@ public class CollisionComponent : ActorComponent
         return onGround;
     }
 
-    public bool getAirJump(){
-        return airJump;
+    public Dictionary<string, bool> getAirActions(){
+        return airActions;
     }
 
-    public void setAirJump(bool value){
-        airJump = value;
+    public void setAirActions(string name, bool value){
+        airActions[name] = value;
     }
 }
