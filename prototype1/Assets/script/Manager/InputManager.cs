@@ -5,6 +5,7 @@ using UnityEngine;
 public class InputManager : Singleton<InputManager>
 {
     private float moveAxisVal = 0;
+    public bool jumpBtnPressed = false;
 
     public void InitManager()
     {
@@ -23,6 +24,11 @@ public class InputManager : Singleton<InputManager>
             CGameEventManager.Instance.SendEvent<MoveAxisEventParam>(enGameEvent.MoveAxisEvent, ref param);
         }
 
-
+        if(Input.GetButtonDown("btn0")){
+            jumpBtnPressed = true;
+        }
+        if(Input.GetButtonUp("btn0")){
+            jumpBtnPressed = false;
+        }
     }
 }

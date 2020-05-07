@@ -4,6 +4,7 @@ using System.Collections;
 public class ActorLinkerComponent : ActorComponent {
 
     public GameObject actorObj;
+    public Transform groundCheck;
 
     public override void Init(ActorRoot actor, string actorPath) {
         base.Init(actor, actorPath);
@@ -17,7 +18,7 @@ public class ActorLinkerComponent : ActorComponent {
         actorObj = Object.Instantiate(actorObjTemplate);
         actorObj.transform.name = "HostPlayer";
         actorObj.transform.position = Vector3.zero;
-
+        groundCheck = actorObj.GetComponent<Transform>().Find("groundCheck");
     }
 
     public override void Prepare() {

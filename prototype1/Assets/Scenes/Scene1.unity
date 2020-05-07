@@ -1680,6 +1680,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spawnPoint: {fileID: 1901958969}
   actorPath: Prefabs/ActorPrefabs/MainActorPrefab
+  virtualCam: {fileID: 922105464}
 --- !u!4 &1635916487
 Transform:
   m_ObjectHideFlags: 0

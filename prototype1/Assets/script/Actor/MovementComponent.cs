@@ -4,7 +4,6 @@ using System.Collections;
 public class MovementComponent : ActorComponent
 {
     private Rigidbody2D rigidBody;
-
     private float moveAxisVal = 0.0f;
 
     public override void Init(ActorRoot actor, string actorPath)
@@ -49,7 +48,7 @@ public class MovementComponent : ActorComponent
     {
         base.FixedUpdate(fixedUpdateTime);
         Move(fixedUpdateTime);
-
+        Jump(fixedUpdateTime);
     }
 
     private void Move(float deltaTime)
@@ -76,6 +75,16 @@ public class MovementComponent : ActorComponent
         else if (moveAxisVal < 0)
         {
             actor.GetTransform().localScale = new Vector3(-System.Math.Abs(actor.GetTransform().localScale.x), actor.GetTransform().localScale.y, actor.GetTransform().localScale.z);
+        }
+    }
+
+    private void Jump(float deltaTime){
+        if(InputManager.Instance.jumpBtnPressed&&(actor.collisionComponent.getOnGround()||actor.collisionComponent.getAirJump())){
+            rigidBody.velocity = new Vector2(rigidBody.velocity.x,actor.valueComponent.JumpForce);
+            InputManager.Instance.jumpBtnPressed = false;
+            if(!actor.collisionComponent.getOnGround()){
+                actor.collisionComponent.setAirJump(false);
+            }
         }
     }
 
