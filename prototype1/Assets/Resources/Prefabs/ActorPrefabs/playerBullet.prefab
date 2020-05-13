@@ -10,8 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 326817614021107569}
   - component: {fileID: 326817614021107570}
+  - component: {fileID: -4838398406276808201}
   - component: {fileID: 326817614021107571}
-  - component: {fileID: 326817614021107568}
   - component: {fileID: 326817614021107575}
   m_Layer: 0
   m_Name: playerBullet
@@ -84,6 +84,18 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &-4838398406276808201
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 326817614021107564}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8a65976051dc7043b012d01d984a16b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!60 &326817614021107571
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -150,18 +162,6 @@ PolygonCollider2D:
       - {x: -0.87, y: -1.005}
       - {x: -0.68, y: -0.995}
       - {x: -0.39999998, y: -0.97499996}
---- !u!114 &326817614021107568
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 326817614021107564}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 289c5cab1b76aa84db59c7aca7555fbe, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!50 &326817614021107575
 Rigidbody2D:
   serializedVersion: 4
