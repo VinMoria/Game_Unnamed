@@ -5,11 +5,14 @@ using System.Collections.Generic;
 public class MovementComponent : ActorComponent
 {
     private Rigidbody2D rigidBody;
+    GameObject defendObject;
+    Vector2 pos;
+    private PlayerDefend playerDefend;
     private float moveAxisVal = 0.0f;
     private int activedActionTimeKeeper = 0;
     private string activedActionTimeKeeperName; 
     private bool playerActionsFreezed;
-    public int[] coldDownTimes = new int[3];
+    public int[] coldDownTimes = new int[4];
 
     public override void Init(ActorRoot actor, string actorPath)
     {
@@ -25,6 +28,9 @@ public class MovementComponent : ActorComponent
         coldDownTimes[0] = 0; //dash
         coldDownTimes[1] = 0; //bullet
         coldDownTimes[2] = 0; //slash
+        coldDownTimes[3] = 0; //defend
+        defendObject = Object.Instantiate(Resources.Load<GameObject>("Prefabs/ActorPrefabs/playerDefend"));
+        playerDefend = defendObject.GetComponent<PlayerDefend>();
     }
 
     public override void UnInit()
@@ -58,10 +64,12 @@ public class MovementComponent : ActorComponent
             Dash(fixedUpdateTime);
             Shot(fixedUpdateTime);
             Slash(fixedUpdateTime);
+            Defend(fixedUpdateTime);
         }else{
             DashTimeKeep(fixedUpdateTime);
             ShotTimeKeep(fixedUpdateTime);
             SlashTimeKeep(fixedUpdateTime);
+            DefendEnd(fixedUpdateTime);
         }
         coldDown();
     }
@@ -144,7 +152,6 @@ public class MovementComponent : ActorComponent
 
     private void Shot(float deltaTime){
         if(InputManager.Instance.btnsPressed["btn3"]&&coldDownTimes[1]==0){
-            Vector2 pos;
             InputManager.Instance.btnsPressed["btn3"] = false;
             activedActionTimeKeeperName = "Shot";
             coldDownTimes[1] = 50;
@@ -182,6 +189,46 @@ public class MovementComponent : ActorComponent
         }
     }
     
+    private void Defend(float deltaTime){
+        if(InputManager.Instance.btnsPressed["axis3"]&&coldDownTimes[3]==0){
+            activedActionTimeKeeperName = "Defend";
+            activedActionTimeKeeper = 0;
+            playerActionsFreezed = true;
+            rigidBody.velocity = new Vector2(0,0);
+            if(rigidBody.transform.localScale.x>0){
+                pos = new Vector2(rigidBody.position.x+1.2f, rigidBody.position.y);
+                defendObject.transform.localScale = new Vector2(System.Math.Abs(defendObject.transform.localScale.x), defendObject.transform.localScale.y);
+            }else{
+                pos = new Vector2(rigidBody.position.x-1.2f, rigidBody.position.y);
+                defendObject.transform.localScale = new Vector2(-System.Math.Abs(defendObject.transform.localScale.x), defendObject.transform.localScale.y);
+            }
+            defendObject.transform.position = pos;
+            playerDefend.shieldOn();
+        }
+    }
+
+    private void DefendEnd(float deltaTime){
+        if(activedActionTimeKeeperName=="Defend"){
+            if(InputManager.Instance.btnsPressed["axis3"]){
+                activedActionTimeKeeper+=1;
+                if(rigidBody.transform.localScale.x>0){
+                    pos = new Vector2(rigidBody.position.x+1.2f, rigidBody.position.y);
+                }else{
+                    pos = new Vector2(rigidBody.position.x-1.2f, rigidBody.position.y);
+                }
+                defendObject.transform.position = pos;
+            }else{
+                if(activedActionTimeKeeper>10){
+                    playerDefend.shieldDown();
+                }else{
+                    playerDefend.parryActive();
+                }
+                stateNormal();
+            }
+        }
+    }
+
+
     private void DashTimeKeep(float deltaTime){
         if(activedActionTimeKeeperName=="Dash"){
             activedActionTimeKeeper+=1;

@@ -13,6 +13,7 @@ public class InputManager : Singleton<InputManager>
         btnsPressed.Add("btn1", false);
         btnsPressed.Add("btn2", false);
         btnsPressed.Add("btn3", false);
+        btnsPressed.Add("axis3", false);
     }
 
     public void Update(float delta)
@@ -31,6 +32,7 @@ public class InputManager : Singleton<InputManager>
         BtnDownTrigger("btn1");
         BtnDownTrigger("btn2");
         BtnDownTrigger("btn3");
+        BtnDownAxis("axis3");
     }
 
     private void BtnDownTrigger(string btnName){
@@ -39,6 +41,14 @@ public class InputManager : Singleton<InputManager>
         }
         if(Input.GetButtonUp(btnName)){
             btnsPressed[btnName] = false;
+        }
+    }
+
+    private void BtnDownAxis(string axisName){
+        if(Input.GetAxis(axisName)>0){
+            btnsPressed[axisName] = true;
+        }else{
+            btnsPressed[axisName] = false;
         }
     }
 }
