@@ -7,7 +7,6 @@ public class PlayerDefend : MonoBehaviour
     GameObject parry,shield;
     void Start()
     {
-        Debug.Log("defend onStart");
         shield = GetComponentsInChildren<Transform>()[1].gameObject;
         parry = GetComponentsInChildren<Transform>()[2].gameObject;
         shield.SetActive(false);

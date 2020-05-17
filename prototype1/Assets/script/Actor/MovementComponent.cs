@@ -113,7 +113,6 @@ public class MovementComponent : ActorComponent
 
     private void Slash(float deltaTime){
         if(InputManager.Instance.btnsPressed["btn2"]&&coldDownTimes[2]==0){
-            Vector2 pos;
             InputManager.Instance.btnsPressed["btn2"] = false;
             activedActionTimeKeeperName = "Slash";
             coldDownTimes[2] = 20;
@@ -227,7 +226,6 @@ public class MovementComponent : ActorComponent
             }
         }
     }
-
 
     private void DashTimeKeep(float deltaTime){
         if(activedActionTimeKeeperName=="Dash"){

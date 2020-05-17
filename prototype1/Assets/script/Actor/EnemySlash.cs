@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerSlash : MonoBehaviour
+public class EnemySlash : MonoBehaviour
 {
     private Rigidbody2D slash;
 
