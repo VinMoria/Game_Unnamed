@@ -16,7 +16,6 @@ public class PlayerSlash : MonoBehaviour
     }
 
     private void slashEnd(){
-        Debug.Log("slash time up");
         Destroy(gameObject);
     }
 }

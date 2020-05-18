@@ -60,7 +60,6 @@ public class EnemyBehavior : MonoBehaviour
     }
 
     private void OnTriggerEnter2D(Collider2D collider){
-        Debug.Log(collider.gameObject.tag);
         if(collider.gameObject.tag=="player"){
             stateIndex = 1;
             player = collider.gameObject.transform;
@@ -75,7 +74,7 @@ public class EnemyBehavior : MonoBehaviour
     private void attackStart(){
         stateIndex = 1;
         alert.SetActive(true);
-        Invoke("Attack", 0.2f);
+        Invoke("Attack", 0.4f);
     }
     
     private void moveDirection(bool faceRight, float speed){
@@ -107,7 +106,6 @@ public class EnemyBehavior : MonoBehaviour
         }else{
             pos = new Vector2(rigidbody.position.x-1.0f, rigidbody.position.y);
         }
-
         GameObject slashObject = Object.Instantiate(Resources.Load<GameObject>("Prefabs/ActorPrefabs/enemySlash"));
         slashObject.transform.position = pos;
         slashObject.transform.name = "slash";

@@ -19,20 +19,25 @@ public class PlayerDefend : MonoBehaviour
     }
 
     public void shieldOn(){
+        PlayerState.Instance.shield = true;
         shield.SetActive(true);
     }
 
     public void shieldDown(){
+        PlayerState.Instance.shield = false;
         shield.SetActive(false);
     }
 
     public void parryActive(){
         shield.SetActive(false);
         parry.SetActive(true);
-        Invoke("parryDown",0.1f);
+        PlayerState.Instance.parry = true;
+        PlayerState.Instance.shield = false;
+        Invoke("parryDown",0.3f);
     }
 
     private void parryDown(){
         parry.SetActive(false);
+        PlayerState.Instance.parry = false;
     }
 }

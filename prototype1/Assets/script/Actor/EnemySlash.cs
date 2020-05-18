@@ -11,12 +11,19 @@ public class EnemySlash : MonoBehaviour
         Invoke("slashEnd", 0.2f);
     }
 
-    private void OnTriggerEnter2D(Collider2D collision){
-        Debug.Log("hit: "+collision.transform.tag);
+    private void OnTriggerEnter2D(Collider2D collider){
+        if(collider.transform.tag=="player"){
+            if(PlayerState.Instance.parry){
+                Debug.Log("hit the parry");
+            }else if(PlayerState.Instance.shield){
+                Debug.Log("hit the shield");
+            }else{
+                Debug.Log("hit the player");
+            }
+        }
     }
 
     private void slashEnd(){
-        Debug.Log("slash time up");
         Destroy(gameObject);
     }
 }
