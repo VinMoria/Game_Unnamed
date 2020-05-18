@@ -4,12 +4,14 @@ using UnityEngine;
 
 public class PlayerSoundManager : Singleton<PlayerSoundManager>
 {
-    public AudioSource audioSource;
-    public AudioClip slashAudio, jumpAudio, shotAudio;
+    private AudioSource audioSource;
+    private AudioClip slashAudio, parryAudio, shieldAudio;
 
-    public void jumpSound(){
-        audioSource.clip = jumpAudio;
-        audioSource.Play();
+    public void InitManager(AudioSource audioSource){
+        this.audioSource = audioSource;
+        slashAudio = Resources.Load<AudioClip>("soundRes/slashSound");
+        parryAudio = Resources.Load<AudioClip>("soundRes/parrySound");
+        shieldAudio = Resources.Load<AudioClip>("soundRes/shieldSound");
     }
 
     public void slashSound(){
@@ -17,8 +19,13 @@ public class PlayerSoundManager : Singleton<PlayerSoundManager>
         audioSource.Play();
     }
 
-    public void shotSound(){
-        audioSource.clip = shotAudio;
+    public void parrySound(){
+        audioSource.clip = parryAudio;
+        audioSource.Play();
+    }
+
+    public void shieldSound(){
+        audioSource.clip = shieldAudio;
         audioSource.Play();
     }
 }

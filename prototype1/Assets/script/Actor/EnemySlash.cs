@@ -15,8 +15,10 @@ public class EnemySlash : MonoBehaviour
         if(collider.transform.tag=="player"){
             if(PlayerState.Instance.parry){
                 Debug.Log("hit the parry");
+                PlayerSoundManager.Instance.parrySound();
             }else if(PlayerState.Instance.shield){
                 Debug.Log("hit the shield");
+                PlayerSoundManager.Instance.shieldSound();
             }else{
                 Debug.Log("hit the player");
             }

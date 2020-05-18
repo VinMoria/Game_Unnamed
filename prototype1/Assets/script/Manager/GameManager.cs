@@ -8,7 +8,7 @@ public class GameManager : MonoBehaviour
     public Transform spawnPoint;
     //TEMP actor Path
     public string actorPath;
-
+    public AudioSource audioSource;
     public Transform virtualCam;
 
 
@@ -19,7 +19,7 @@ public class GameManager : MonoBehaviour
     public void Start() {
         DontDestroyOnLoad(this);
         Instance = this;
-
+        PlayerSoundManager.Instance.InitManager(audioSource);
         CGameEventManager.Instance.InitManager();
         InputManager.Instance.InitManager();
         ActorManager.Instance.InitManager();

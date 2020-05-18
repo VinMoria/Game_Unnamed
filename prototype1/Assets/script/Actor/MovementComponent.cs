@@ -127,6 +127,7 @@ public class MovementComponent : ActorComponent
             }
 
             GameObject slashObject = Object.Instantiate(Resources.Load<GameObject>("Prefabs/ActorPrefabs/playerSlash"));
+            PlayerSoundManager.Instance.slashSound();
             slashObject.transform.position = pos;
             slashObject.transform.name = "slash";
             PlayerSlash pbb = slashObject.GetComponent<PlayerSlash>();
