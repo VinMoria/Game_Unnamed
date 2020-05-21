@@ -4,11 +4,12 @@ using UnityEngine;
 
 public class PlayerSlash : MonoBehaviour
 {
-    private Rigidbody2D slash;
+    private GameObject slash;
 
     void Start()
     {
-        Invoke("slashEnd", 0.2f);
+        slash = GetComponent<Transform>().gameObject;
+        slash.SetActive(false);
     }
 
     private void OnTriggerEnter2D(Collider2D collision){
@@ -16,6 +17,11 @@ public class PlayerSlash : MonoBehaviour
     }
 
     private void slashEnd(){
-        Destroy(gameObject);
+        slash.SetActive(false);
+    }
+
+    public void slashOn(){
+        slash.SetActive(true);
+        Invoke("slashEnd", 0.2f);
     }
 }

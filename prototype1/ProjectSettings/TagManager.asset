@@ -23,10 +23,10 @@ TagManager:
   - 
   - 
   - ground
-  - 
-  - 
-  - 
-  - 
+  - playerAttack
+  - enemyAttack
+  - enemy
+  - player
   - 
   - 
   - 

@@ -16,6 +16,8 @@ public class EnemyBehavior : MonoBehaviour
     private float attack1Distance = 1.0f;
     private float attack2Distance = 2.0f;
     Vector2 pos;
+    EnemySlash es;
+    public GameObject slashObject;
     void Start()
     {
         rigidbody = GetComponent<Rigidbody2D>();
@@ -23,6 +25,7 @@ public class EnemyBehavior : MonoBehaviour
         rightX = rightPoint.transform.position.x;
         Destroy(leftPoint);
         Destroy(rightPoint);
+        es = slashObject.GetComponent<EnemySlash>();
         stateIndex = 0;
         faceRight = true;
         nextMove();
@@ -50,7 +53,7 @@ public class EnemyBehavior : MonoBehaviour
             chase();
         }else if(stateIndex == 2){
             if(coldDownTime==0){
-                coldDownTime = 200;
+                coldDownTime = 100;
                 attackStart();
             }else{
                 stateIndex = 1;
@@ -88,7 +91,7 @@ public class EnemyBehavior : MonoBehaviour
     }
 
     private void chase(){
-        if(System.Math.Abs(rigidbody.transform.position.x-player.position.x)>4){
+        if(System.Math.Abs(rigidbody.transform.position.x-player.position.x)>3.5){
             if(rigidbody.transform.position.x>player.position.x){
                 moveDirection(false, 6);
             }else{
@@ -101,19 +104,7 @@ public class EnemyBehavior : MonoBehaviour
 
     private void Attack(){
         alert.SetActive(false);
-        if(rigidbody.transform.localScale.x>0){
-            pos = new Vector2(rigidbody.position.x+1.0f, rigidbody.position.y);
-        }else{
-            pos = new Vector2(rigidbody.position.x-1.0f, rigidbody.position.y);
-        }
-        GameObject slashObject = Object.Instantiate(Resources.Load<GameObject>("Prefabs/ActorPrefabs/enemySlash"));
-        slashObject.transform.position = pos;
-        slashObject.transform.name = "slash";
-        EnemySlash es = slashObject.GetComponent<EnemySlash>();
-
-        if(rigidbody.transform.localScale.x<0){
-            slashObject.transform.localScale = new Vector2(-slashObject.transform.localScale.x, slashObject.transform.localScale.y);
-        }
+        es.slashOn();
     }
 
     private void coldDown(){

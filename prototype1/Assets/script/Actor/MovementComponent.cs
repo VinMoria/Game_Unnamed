@@ -5,19 +5,18 @@ using System.Collections.Generic;
 public class MovementComponent : ActorComponent
 {
     private Rigidbody2D rigidBody;
-    GameObject defendObject;
+    GameObject defendObject,slashObject;
     Vector2 pos;
     private PlayerDefend playerDefend;
+    private PlayerSlash playerSlash;
     private float moveAxisVal = 0.0f;
-    private int activedActionTimeKeeper = 0;
-    private string activedActionTimeKeeperName; 
-    private bool playerActionsFreezed;
+    
     public int[] coldDownTimes = new int[4];
 
     public override void Init(ActorRoot actor, string actorPath)
     {
         base.Init(actor, actorPath);
-        playerActionsFreezed = false;
+        PlayerState.Instance.playerActionsFreezed = false;
         AddEventListener();
     }
 
@@ -29,8 +28,10 @@ public class MovementComponent : ActorComponent
         coldDownTimes[1] = 0; //bullet
         coldDownTimes[2] = 0; //slash
         coldDownTimes[3] = 0; //defend
-        defendObject = Object.Instantiate(Resources.Load<GameObject>("Prefabs/ActorPrefabs/playerDefend"));
+        defendObject = rigidBody.GetComponentsInChildren<Transform>()[2].gameObject;
+        slashObject = rigidBody.GetComponentsInChildren<Transform>()[5].gameObject;
         playerDefend = defendObject.GetComponent<PlayerDefend>();
+        playerSlash = slashObject.GetComponent<PlayerSlash>();
     }
 
     public override void UnInit()
@@ -58,7 +59,7 @@ public class MovementComponent : ActorComponent
     public override void FixedUpdate(float fixedUpdateTime)
     {
         base.FixedUpdate(fixedUpdateTime);
-        if(!playerActionsFreezed){
+        if(!PlayerState.Instance.playerActionsFreezed){
             Move(fixedUpdateTime);
             Jump(fixedUpdateTime);
             Dash(fixedUpdateTime);
@@ -114,38 +115,25 @@ public class MovementComponent : ActorComponent
     private void Slash(float deltaTime){
         if(InputManager.Instance.btnsPressed["btn2"]&&coldDownTimes[2]==0){
             InputManager.Instance.btnsPressed["btn2"] = false;
-            activedActionTimeKeeperName = "Slash";
+            PlayerState.Instance.activedActionTimeKeeperName = "Slash";
             coldDownTimes[2] = 20;
-            activedActionTimeKeeper = 0;
-            playerActionsFreezed = true;
+            PlayerState.Instance.activedActionTimeKeeper = 0;
+            PlayerState.Instance.playerActionsFreezed = true;
             rigidBody.velocity = new Vector2(0,0);
-            rigidBody.gravityScale = 0;
-            if(rigidBody.transform.localScale.x>0){
-                pos = new Vector2(rigidBody.position.x+1.0f, rigidBody.position.y);
-            }else{
-                pos = new Vector2(rigidBody.position.x-1.0f, rigidBody.position.y);
-            }
-
-            GameObject slashObject = Object.Instantiate(Resources.Load<GameObject>("Prefabs/ActorPrefabs/playerSlash"));
+            //rigidBody.gravityScale = 0;
             PlayerSoundManager.Instance.slashSound();
-            slashObject.transform.position = pos;
-            slashObject.transform.name = "slash";
-            PlayerSlash pbb = slashObject.GetComponent<PlayerSlash>();
-
-            if(rigidBody.transform.localScale.x<0){
-                slashObject.transform.localScale = new Vector2(-slashObject.transform.localScale.x, slashObject.transform.localScale.y);
-            }
+            playerSlash.slashOn();
         }
     }
 
     private void SlashTimeKeep(float deltaTime){
-        if(activedActionTimeKeeperName=="Slash"){
-            activedActionTimeKeeper+=1;
-            if(activedActionTimeKeeper == 10){
-                gravityBack();
+        if(PlayerState.Instance.activedActionTimeKeeperName=="Slash"){
+            PlayerState.Instance.activedActionTimeKeeper+=1;
+            if(PlayerState.Instance.activedActionTimeKeeper == 10){
+                //gravityBack();
                 stateNormal();
-                activedActionTimeKeeper = 0;
-                activedActionTimeKeeperName = "";
+                PlayerState.Instance.activedActionTimeKeeper = 0;
+                PlayerState.Instance.activedActionTimeKeeperName = "";
             }
         }
     }
@@ -153,10 +141,10 @@ public class MovementComponent : ActorComponent
     private void Shot(float deltaTime){
         if(InputManager.Instance.btnsPressed["btn3"]&&coldDownTimes[1]==0){
             InputManager.Instance.btnsPressed["btn3"] = false;
-            activedActionTimeKeeperName = "Shot";
+            PlayerState.Instance.activedActionTimeKeeperName = "Shot";
             coldDownTimes[1] = 50;
-            activedActionTimeKeeper = 0;
-            playerActionsFreezed = true;
+            PlayerState.Instance.activedActionTimeKeeper = 0;
+            PlayerState.Instance.playerActionsFreezed = true;
             rigidBody.velocity = new Vector2(0,0);
             rigidBody.gravityScale = 0;
             if(rigidBody.transform.localScale.x>0){
@@ -178,47 +166,33 @@ public class MovementComponent : ActorComponent
     }
 
     private void ShotTimeKeep(float deltaTime){
-        if(activedActionTimeKeeperName=="Shot"){
-            activedActionTimeKeeper+=1;
-            if(activedActionTimeKeeper == 10){
+        if(PlayerState.Instance.activedActionTimeKeeperName=="Shot"){
+            PlayerState.Instance.activedActionTimeKeeper+=1;
+            if(PlayerState.Instance.activedActionTimeKeeper == 10){
                 gravityBack();
                 stateNormal();
-                activedActionTimeKeeper = 0;
-                activedActionTimeKeeperName = "";
+                PlayerState.Instance.activedActionTimeKeeper = 0;
+                PlayerState.Instance.activedActionTimeKeeperName = "";
             }
         }
     }
     
     private void Defend(float deltaTime){
         if(InputManager.Instance.btnsPressed["axis3"]&&coldDownTimes[3]==0){
-            activedActionTimeKeeperName = "Defend";
-            activedActionTimeKeeper = 0;
-            playerActionsFreezed = true;
+            PlayerState.Instance.activedActionTimeKeeperName = "Defend";
+            PlayerState.Instance.activedActionTimeKeeper = 0;
+            PlayerState.Instance.playerActionsFreezed = true;
             rigidBody.velocity = new Vector2(0,0);
-            if(rigidBody.transform.localScale.x>0){
-                pos = new Vector2(rigidBody.position.x+1.2f, rigidBody.position.y);
-                defendObject.transform.localScale = new Vector2(System.Math.Abs(defendObject.transform.localScale.x), defendObject.transform.localScale.y);
-            }else{
-                pos = new Vector2(rigidBody.position.x-1.2f, rigidBody.position.y);
-                defendObject.transform.localScale = new Vector2(-System.Math.Abs(defendObject.transform.localScale.x), defendObject.transform.localScale.y);
-            }
-            defendObject.transform.position = pos;
             playerDefend.shieldOn();
+            coldDownTimes[3] = 40;
         }
     }
 
     private void DefendEnd(float deltaTime){
-        if(activedActionTimeKeeperName=="Defend"){
-            if(InputManager.Instance.btnsPressed["axis3"]){
-                activedActionTimeKeeper+=1;
-                if(rigidBody.transform.localScale.x>0){
-                    pos = new Vector2(rigidBody.position.x+1.2f, rigidBody.position.y);
-                }else{
-                    pos = new Vector2(rigidBody.position.x-1.2f, rigidBody.position.y);
-                }
-                defendObject.transform.position = pos;
-            }else{
-                if(activedActionTimeKeeper>10){
+        if(PlayerState.Instance.activedActionTimeKeeperName=="Defend"){
+            PlayerState.Instance.activedActionTimeKeeper+=1;
+            if(!InputManager.Instance.btnsPressed["axis3"]){
+                if(PlayerState.Instance.activedActionTimeKeeper>10){
                     playerDefend.shieldDown();
                 }else{
                     playerDefend.parryActive();
@@ -229,26 +203,26 @@ public class MovementComponent : ActorComponent
     }
 
     private void DashTimeKeep(float deltaTime){
-        if(activedActionTimeKeeperName=="Dash"){
-            activedActionTimeKeeper+=1;
-            if(activedActionTimeKeeper==10){
+        if(PlayerState.Instance.activedActionTimeKeeperName=="Dash"){
+            PlayerState.Instance.activedActionTimeKeeper+=1;
+            if(PlayerState.Instance.activedActionTimeKeeper==10){
                 moveStop();
-            }else if(activedActionTimeKeeper==20){
+            }else if(PlayerState.Instance.activedActionTimeKeeper==20){
                 gravityBack();
                 stateNormal();
-                activedActionTimeKeeper = 0;
-                activedActionTimeKeeperName = "";
+                PlayerState.Instance.activedActionTimeKeeper = 0;
+                PlayerState.Instance.activedActionTimeKeeperName = "";
             }
         }
     }
     
     private void Dash(float deltaTime){
         if(InputManager.Instance.btnsPressed["btn1"]&&(actor.collisionComponent.getOnGround()||actor.collisionComponent.getAirActions()["airDash"])&&coldDownTimes[0]==0){
-            activedActionTimeKeeperName = "Dash";
+            PlayerState.Instance.activedActionTimeKeeperName = "Dash";
             coldDownTimes[0] = 30;
-            activedActionTimeKeeper = 0;
+            PlayerState.Instance.activedActionTimeKeeper = 0;
             InputManager.Instance.btnsPressed["btn1"] = false;
-            playerActionsFreezed = true;
+            PlayerState.Instance.playerActionsFreezed = true;
             rigidBody.gravityScale = 0;
             if(rigidBody.transform.localScale.x>0){
                 rigidBody.velocity = new Vector2(actor.valueComponent.DashSpeed*Time.deltaTime, 0);
@@ -279,14 +253,16 @@ public class MovementComponent : ActorComponent
     }
 
     void stateNormal(){
-        playerActionsFreezed = false;
+        PlayerState.Instance.playerActionsFreezed = false;
+        PlayerState.Instance.activedActionTimeKeeperName = "";
     }
-
+    
     void coldDown(){
-        for(int i = 0;i<3;i++){
+        for(int i = 0;i<4;i++){
             if(coldDownTimes[i]>0){
                 coldDownTimes[i]--;
             }
         }
     }
+
 }
