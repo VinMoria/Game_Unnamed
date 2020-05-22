@@ -7,6 +7,7 @@ public class EnemySlash : MonoBehaviour
     private GameObject slash;
     public Transform enemy;
     private Rigidbody2D player;
+    private bool hit = false;
 
     void Start()
     {
@@ -15,12 +16,12 @@ public class EnemySlash : MonoBehaviour
     }
 
     private void OnTriggerEnter2D(Collider2D collider){
-        if(collider.transform.tag=="player"&&!PlayerState.Instance.defendOn){
+        if(collider.transform.tag=="player"&&!PlayerState.Instance.defendOn&&!hit){
+            hit = true;
             player = collider.GetComponent<Rigidbody2D>();
             PlayerState.Instance.activedActionTimeKeeperName = "shockBack";
             player.gravityScale = 6.0f;
             Invoke("shockEnd", 0.1f);
-            Debug.Log("state:shock");
             PlayerState.Instance.playerActionsFreezed = true;
             
             if(enemy.localScale.x>0){
@@ -30,25 +31,26 @@ public class EnemySlash : MonoBehaviour
             }
 
         }
-        if(collider.transform.tag=="shield"){
+        if(collider.transform.tag=="shield"&&!hit){
+            hit = true;
             PlayerSoundManager.Instance.shieldSound();
         }
-        if(collider.transform.tag=="parry"){
+        if(collider.transform.tag=="parry"&&!hit){
+            hit = true;
             PlayerSoundManager.Instance.parrySound();
         }
     }
 
-    private void slashEnd(){
+    public void slashEnd(){
         slash.SetActive(false);
+        hit = false;
     }
 
     public void slashOn(){
         slash.SetActive(true);
-        Invoke("slashEnd", 0.2f);
     }
 
     private void shockEnd(){
-        Debug.Log("state:back");
         PlayerState.Instance.activedActionTimeKeeperName = "";
         PlayerState.Instance.playerActionsFreezed = false;
         player.gravityScale = 6.0f;

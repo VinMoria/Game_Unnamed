@@ -15,11 +15,14 @@ public class EnemyBehavior : MonoBehaviour
     private int randomInt;
     private float attack1Distance = 1.0f;
     private float attack2Distance = 2.0f;
-    Vector2 pos;
+    Vector3 pos;
     EnemySlash es;
     public GameObject slashObject;
+    Random rd = new Random();
+    private float rdFloat;
     void Start()
     {
+        nextRd();
         rigidbody = GetComponent<Rigidbody2D>();
         leftX = leftPoint.transform.position.x;
         rightX = rightPoint.transform.position.x;
@@ -53,9 +56,9 @@ public class EnemyBehavior : MonoBehaviour
             chase();
         }else if(stateIndex == 2){
             if(coldDownTime==0){
-                coldDownTime = 100;
                 attackStart();
-            }else{
+                coldDownTime = -1;
+            }else if(coldDownTime>0){
                 stateIndex = 1;
             }
         }
@@ -64,8 +67,11 @@ public class EnemyBehavior : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collider){
         if(collider.gameObject.tag=="player"){
-            stateIndex = 1;
-            player = collider.gameObject.transform;
+            Debug.Log(stateIndex);
+            if(stateIndex == 0){
+                stateIndex = 1;
+                player = collider.gameObject.transform;
+            }
         }
     }
 
@@ -75,7 +81,6 @@ public class EnemyBehavior : MonoBehaviour
     }
 
     private void attackStart(){
-        stateIndex = 1;
         alert.SetActive(true);
         Invoke("Attack", 0.4f);
     }
@@ -83,21 +88,30 @@ public class EnemyBehavior : MonoBehaviour
     private void moveDirection(bool faceRight, float speed){
         if(faceRight&&rigidbody.transform.position.x<rightX){
             rigidbody.transform.localScale = new Vector3(System.Math.Abs(rigidbody.transform.localScale.x),rigidbody.transform.localScale.y, rigidbody.transform.localScale.z);
-            rigidbody.transform.position = new Vector3(rigidbody.transform.position.x+speed*Time.deltaTime,rigidbody.transform.position.y,rigidbody.transform.position.z);
         }else if(!faceRight&&rigidbody.transform.position.x>leftX){
             rigidbody.transform.localScale = new Vector3(-System.Math.Abs(rigidbody.transform.localScale.x),rigidbody.transform.localScale.y, rigidbody.transform.localScale.z);
-            rigidbody.transform.position = new Vector3(rigidbody.transform.position.x-speed*Time.deltaTime,rigidbody.transform.position.y,rigidbody.transform.position.z);
+        }
+        if(rigidbody.transform.position.x+speed*Time.deltaTime>leftX&&rigidbody.transform.position.x+speed*Time.deltaTime<rightX){
+            rigidbody.transform.position = new Vector3(rigidbody.transform.position.x+speed*Time.deltaTime,rigidbody.transform.position.y,rigidbody.transform.position.z);
         }
     }
 
     private void chase(){
-        if(System.Math.Abs(rigidbody.transform.position.x-player.position.x)>3.5){
+        if(System.Math.Abs(rigidbody.transform.position.x-player.position.x)>(2.5+rdFloat)){
             if(rigidbody.transform.position.x>player.position.x){
-                moveDirection(false, 6);
+                moveDirection(false, -6);
             }else{
                 moveDirection(true, 6);
             }
-        }else{
+        }else if(System.Math.Abs(rigidbody.transform.position.x-player.position.x)<(2+rdFloat)
+        &&(rigidbody.transform.position.x-leftX)>0.2
+        &&(rightX-rigidbody.transform.position.x)>0.2){
+            if(rigidbody.transform.position.x>player.position.x){
+                moveDirection(false, 3);
+            }else{
+                moveDirection(true, -3);
+            }
+        }else if(System.Math.Abs(rigidbody.transform.position.y-player.position.y)<2){
             stateIndex = 2;
         }
     }
@@ -105,11 +119,23 @@ public class EnemyBehavior : MonoBehaviour
     private void Attack(){
         alert.SetActive(false);
         es.slashOn();
+        Invoke("AttackEnd", 0.2f);
+    }
+
+    private void AttackEnd(){
+        es.slashEnd();
+        stateIndex = 1;
+        coldDownTime = 100+Random.Range(0, 100);
     }
 
     private void coldDown(){
         if(coldDownTime>0){
             coldDownTime--;
         }
+    }
+
+    private void nextRd(){
+        rdFloat = Random.Range(0.0f,1.5f);
+        Invoke("nextRd",0.7f);
     }
 }
