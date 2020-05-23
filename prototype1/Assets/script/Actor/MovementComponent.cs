@@ -58,6 +58,9 @@ public class MovementComponent : ActorComponent
 
     public override void FixedUpdate(float fixedUpdateTime)
     {
+        if(PlayerState.Instance.HP<=0){
+            actor.UnInit();
+        }
         base.FixedUpdate(fixedUpdateTime);
         if(!PlayerState.Instance.playerActionsFreezed){
             Move(fixedUpdateTime);
@@ -103,9 +106,9 @@ public class MovementComponent : ActorComponent
     }
 
     private void Jump(float deltaTime){
-        if(InputManager.Instance.btnsPressed["btn0"]&&(actor.collisionComponent.getOnGround()||actor.collisionComponent.getAirActions()["airJump"])){
+        if(InputManager.Instance.btnsPressed["jumpBtn"]&&(actor.collisionComponent.getOnGround()||actor.collisionComponent.getAirActions()["airJump"])){
             rigidBody.velocity = new Vector2(rigidBody.velocity.x,actor.valueComponent.JumpForce);
-            InputManager.Instance.btnsPressed["btn0"] = false;
+            InputManager.Instance.btnsPressed["jumpBtn"] = false;
             if(!actor.collisionComponent.getOnGround()){
                 actor.collisionComponent.setAirActions("airJump", false);
             }
@@ -113,8 +116,8 @@ public class MovementComponent : ActorComponent
     }
 
     private void Slash(float deltaTime){
-        if(InputManager.Instance.btnsPressed["btn2"]&&coldDownTimes[2]==0){
-            InputManager.Instance.btnsPressed["btn2"] = false;
+        if(InputManager.Instance.btnsPressed["slashBtn"]&&coldDownTimes[2]==0){
+            InputManager.Instance.btnsPressed["slashBtn"] = false;
             PlayerState.Instance.activedActionTimeKeeperName = "Slash";
             coldDownTimes[2] = 20;
             PlayerState.Instance.activedActionTimeKeeper = 0;
@@ -139,8 +142,8 @@ public class MovementComponent : ActorComponent
     }
 
     private void Shot(float deltaTime){
-        if(InputManager.Instance.btnsPressed["btn3"]&&coldDownTimes[1]==0){
-            InputManager.Instance.btnsPressed["btn3"] = false;
+        if(InputManager.Instance.btnsPressed["shotBtn"]&&coldDownTimes[1]==0){
+            InputManager.Instance.btnsPressed["shotBtn"] = false;
             PlayerState.Instance.activedActionTimeKeeperName = "Shot";
             coldDownTimes[1] = 50;
             PlayerState.Instance.activedActionTimeKeeper = 0;
@@ -178,7 +181,7 @@ public class MovementComponent : ActorComponent
     }
     
     private void Defend(float deltaTime){
-        if(InputManager.Instance.btnsPressed["axis3"]&&coldDownTimes[3]==0){
+        if(InputManager.Instance.btnsPressed["defendBtn"]&&coldDownTimes[3]==0){
             PlayerState.Instance.activedActionTimeKeeperName = "Defend";
             PlayerState.Instance.activedActionTimeKeeper = 0;
             PlayerState.Instance.playerActionsFreezed = true;
@@ -191,7 +194,7 @@ public class MovementComponent : ActorComponent
     private void DefendEnd(float deltaTime){
         if(PlayerState.Instance.activedActionTimeKeeperName=="Defend"){
             PlayerState.Instance.activedActionTimeKeeper+=1;
-            if(!InputManager.Instance.btnsPressed["axis3"]){
+            if(!InputManager.Instance.btnsPressed["defendBtn"]){
                 if(PlayerState.Instance.activedActionTimeKeeper>10){
                     playerDefend.shieldDown();
                 }else{
@@ -217,11 +220,11 @@ public class MovementComponent : ActorComponent
     }
     
     private void Dash(float deltaTime){
-        if(InputManager.Instance.btnsPressed["btn1"]&&(actor.collisionComponent.getOnGround()||actor.collisionComponent.getAirActions()["airDash"])&&coldDownTimes[0]==0){
+        if(InputManager.Instance.btnsPressed["dashBtn"]&&(actor.collisionComponent.getOnGround()||actor.collisionComponent.getAirActions()["airDash"])&&coldDownTimes[0]==0){
             PlayerState.Instance.activedActionTimeKeeperName = "Dash";
             coldDownTimes[0] = 30;
             PlayerState.Instance.activedActionTimeKeeper = 0;
-            InputManager.Instance.btnsPressed["btn1"] = false;
+            InputManager.Instance.btnsPressed["dashBtn"] = false;
             PlayerState.Instance.playerActionsFreezed = true;
             rigidBody.gravityScale = 0;
             if(rigidBody.transform.localScale.x>0){

@@ -6,14 +6,16 @@ public class InputManager : Singleton<InputManager>
 {
     private float moveAxisVal = 0;
     public Dictionary<string, bool> btnsPressed = new Dictionary<string, bool>();
+    private Dictionary<string, bool> axisBtn = new Dictionary<string, bool>();
 
     public void InitManager()
     {
-        btnsPressed.Add("btn0", false);
-        btnsPressed.Add("btn1", false);
-        btnsPressed.Add("btn2", false);
-        btnsPressed.Add("btn3", false);
-        btnsPressed.Add("axis3", false);
+        btnsPressed.Add("jumpBtn", false);
+        btnsPressed.Add("dashBtn", false);
+        btnsPressed.Add("slashBtn", false);
+        btnsPressed.Add("shotBtn", false);
+        btnsPressed.Add("defendBtn", false);
+        axisBtn.Add("axis3", false);
     }
 
     public void Update(float delta)
@@ -28,27 +30,55 @@ public class InputManager : Singleton<InputManager>
             CGameEventManager.Instance.SendEvent<MoveAxisEventParam>(enGameEvent.MoveAxisEvent, ref param);
         }
 
-        BtnDownTrigger("btn0");
-        BtnDownTrigger("btn1");
-        BtnDownTrigger("btn2");
-        BtnDownTrigger("btn3");
-        BtnDownAxis("axis3");
+        BtnDownTrigger("btn0","jumpBtn");
+        BtnDownTrigger("btn1","dashBtn");
+        BtnDownTrigger("btn2","slashBtn");
+        BtnDownTrigger("btn3","shotBtn");
+        BtnDownAxis("axis3","defendBtn");
+
+        BtnDownTrigger("space","jumpBtn");
+        BtnDownTrigger("shift","dashBtn");
+        MouseDownTrigger(0,"slashBtn");
+        BtnDownTrigger("q","shotBtn");
+        MouseDownTrigger(1,"defendBtn");
     }
 
-    private void BtnDownTrigger(string btnName){
+    private void BtnDownTrigger(string btnName,string ActName){
         if(Input.GetButtonDown(btnName)){
-            btnsPressed[btnName] = true;
+            btnsPressed[ActName] = true;
         }
         if(Input.GetButtonUp(btnName)){
-            btnsPressed[btnName] = false;
+            btnsPressed[ActName] = false;
         }
     }
 
-    private void BtnDownAxis(string axisName){
-        if(Input.GetAxis(axisName)>0){
-            btnsPressed[axisName] = true;
-        }else{
-            btnsPressed[axisName] = false;
+    private void BtnDownAxis(string axisName, string ActName){
+        if(Input.GetAxis(axisName)>0&&!axisBtn[axisName]){
+            btnsPressed[ActName] = true;
+            axisBtn[axisName] = true;
+        }else if(Input.GetAxis(axisName)==0&&axisBtn[axisName]){
+            btnsPressed[ActName] = false;
+            axisBtn[axisName] = false;
+        }
+    }
+
+    private void KeyDownTrigger(string KeyName, string ActName){
+        if(Input.GetKeyDown(KeyName)){
+            btnsPressed[ActName] = true;
+        }
+        if(Input.GetKeyUp(KeyName)){
+            btnsPressed[ActName] = false;
+        }
+    }
+
+    private void MouseDownTrigger(int MouseName, string ActName){
+        if(Input.GetMouseButtonDown(MouseName)){
+            btnsPressed[ActName] = true;
+            Debug.Log("press mouse");
+        }
+        if(Input.GetMouseButtonUp(MouseName)){
+            btnsPressed[ActName] = false;
+            Debug.Log("release mouse");
         }
     }
 }

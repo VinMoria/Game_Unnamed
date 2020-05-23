@@ -5,6 +5,7 @@ using UnityEngine;
 public class PlayerSlash : MonoBehaviour
 {
     private GameObject slash;
+    private bool hit = false;
 
     void Start()
     {
@@ -13,11 +14,16 @@ public class PlayerSlash : MonoBehaviour
     }
 
     private void OnTriggerEnter2D(Collider2D collision){
-        Debug.Log("hit: "+collision.transform.tag);
+        if(collision.gameObject.tag=="Enemy"&&!hit){
+            hit = true;
+            Debug.Log("hit enemy");
+            collision.gameObject.GetComponent<EnemyBehavior>().hurt();
+        }
     }
 
     private void slashEnd(){
         slash.SetActive(false);
+        hit = false;
     }
 
     public void slashOn(){

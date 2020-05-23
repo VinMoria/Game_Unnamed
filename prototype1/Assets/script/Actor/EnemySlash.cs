@@ -30,10 +30,13 @@ public class EnemySlash : MonoBehaviour
                 player.velocity = new Vector2(-600*Time.deltaTime, 600*Time.deltaTime);
             }
 
+            PlayerState.Instance.HP -= 20;
+
         }
         if(collider.transform.tag=="shield"&&!hit){
             hit = true;
             PlayerSoundManager.Instance.shieldSound();
+            PlayerState.Instance.HP -= 10;
         }
         if(collider.transform.tag=="parry"&&!hit){
             hit = true;

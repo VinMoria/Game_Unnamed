@@ -20,6 +20,7 @@ public class EnemyBehavior : MonoBehaviour
     public GameObject slashObject;
     Random rd = new Random();
     private float rdFloat;
+    private int HP = 3;
     void Start()
     {
         nextRd();
@@ -39,6 +40,13 @@ public class EnemyBehavior : MonoBehaviour
         
     }
 
+    public void hurt(){
+        HP--;
+        if(HP<=0){
+            Destroy(gameObject);
+        }
+    }
+
     void FixedUpdate(){
         coldDown();
         if(stateIndex == 0){
@@ -47,7 +55,7 @@ public class EnemyBehavior : MonoBehaviour
                 moveDirection(true,4);
                 break;
                 case 1:
-                moveDirection(false,4);
+                moveDirection(false,-4);
                 break;
                 case 2:
                 break;
