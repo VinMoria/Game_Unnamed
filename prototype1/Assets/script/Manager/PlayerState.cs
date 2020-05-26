@@ -9,4 +9,5 @@ public class PlayerState : Singleton<PlayerState>
     public bool playerActionsFreezed = false;
     public int HP = 100;
     public bool defendOn = false;
+    public bool dead = false;
 }

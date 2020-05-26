@@ -58,24 +58,31 @@ public class MovementComponent : ActorComponent
 
     public override void FixedUpdate(float fixedUpdateTime)
     {
-        if(PlayerState.Instance.HP<=0){
+        if(PlayerState.Instance.HP<=0&&!PlayerState.Instance.dead){
             actor.UnInit();
+            PlayerState.Instance.dead = true;
         }
         base.FixedUpdate(fixedUpdateTime);
-        if(!PlayerState.Instance.playerActionsFreezed){
-            Move(fixedUpdateTime);
-            Jump(fixedUpdateTime);
-            Dash(fixedUpdateTime);
-            Shot(fixedUpdateTime);
-            Slash(fixedUpdateTime);
-            Defend(fixedUpdateTime);
-        }else{
-            DashTimeKeep(fixedUpdateTime);
-            ShotTimeKeep(fixedUpdateTime);
-            SlashTimeKeep(fixedUpdateTime);
-            DefendEnd(fixedUpdateTime);
+        if (!PlayerState.Instance.dead)
+        {
+            if (!PlayerState.Instance.playerActionsFreezed)
+            {
+                Move(fixedUpdateTime);
+                Jump(fixedUpdateTime);
+                Dash(fixedUpdateTime);
+                Shot(fixedUpdateTime);
+                Slash(fixedUpdateTime);
+                Defend(fixedUpdateTime);
+            }
+            else
+            {
+                DashTimeKeep(fixedUpdateTime);
+                ShotTimeKeep(fixedUpdateTime);
+                SlashTimeKeep(fixedUpdateTime);
+                DefendEnd(fixedUpdateTime);
+            }
+            coldDown();
         }
-        coldDown();
     }
 
     private void Move(float deltaTime)

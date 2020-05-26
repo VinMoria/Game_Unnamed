@@ -30,10 +30,14 @@ public class CollisionComponent : ActorComponent
 
     public override void FixedUpdate(float fixedDeltaTime){
         base.FixedUpdate(fixedDeltaTime);
-        onGround = Physics2D.OverlapCircle(groundCheck.position, 0.1f, 1<<ground);
-        if(onGround){
-            airActions["airJump"] = true;
-            airActions["airDash"] = true;
+        if (!PlayerState.Instance.dead)
+        {
+            onGround = Physics2D.OverlapCircle(groundCheck.position, 0.1f, 1 << ground);
+            if (onGround)
+            {
+                airActions["airJump"] = true;
+                airActions["airDash"] = true;
+            }
         }
     }
 
