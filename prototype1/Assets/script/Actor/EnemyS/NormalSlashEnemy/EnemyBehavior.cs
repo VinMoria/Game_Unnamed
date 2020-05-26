@@ -9,20 +9,14 @@ public class EnemyBehavior : MonoBehaviour
     private int coldDownTime = 0;
     private Transform player;
     private float leftX,rightX;
-    private int stateIndex;
-    private bool faceRight;
-    private Random random = new Random();
     private int randomInt;
-    private float attack1Distance = 1.0f;
-    private float attack2Distance = 2.0f;
-    Vector3 pos;
     EnemySlash es;
     public GameObject slashObject;
-    Random rd = new Random();
     private float rdFloat;
-    private int HP = 3;
+    public EnemyState enemyState;
     void Start()
     {
+        enemyState = new EnemyState();
         nextRd();
         rigidbody = GetComponent<Rigidbody2D>();
         leftX = leftPoint.transform.position.x;
@@ -30,9 +24,11 @@ public class EnemyBehavior : MonoBehaviour
         Destroy(leftPoint);
         Destroy(rightPoint);
         es = slashObject.GetComponent<EnemySlash>();
-        stateIndex = 0;
-        faceRight = true;
         nextMove();
+        enemyState.defList.Add(new DmgNDefItem("phy", 0.9f));
+        enemyState.defList.Add(new DmgNDefItem("fire", 0.9f));
+        enemyState.dmgList.Add(new DmgNDefItem("phy", 20));
+        enemyState.dmgList.Add(new DmgNDefItem("fire", 20));
     }
 
     void Update()
@@ -40,16 +36,38 @@ public class EnemyBehavior : MonoBehaviour
         
     }
 
-    public void hurt(){
-        HP--;
-        if(HP<=0){
-            Destroy(gameObject);
+    public void hurt(GameObject dmgFrom, List<DmgNDefItem> dmgList){
+        if(enemyState.stateIndex == 0)
+        {
+            player = dmgFrom.transform;
+            enemyState.stateIndex = 1;
+        }
+        float finalDmg = 0;
+        foreach (DmgNDefItem dmg in dmgList)
+        {
+            float thisDmg = dmg.num;
+            foreach (DmgNDefItem def in enemyState.defList) 
+            {
+                if(def.name == dmg.name)
+                {
+                    thisDmg = thisDmg * def.num;
+                    break;
+                }
+            }
+
+            finalDmg += thisDmg;
+        }
+        enemyState.HP -= finalDmg;
+        Debug.Log("hurt: "+finalDmg);
+        
+        if(enemyState.HP<=0){
+            //Destroy(gameObject);
         }
     }
 
     void FixedUpdate(){
         coldDown();
-        if(stateIndex == 0){
+        if(enemyState.stateIndex == 0){
             switch(randomInt){
                 case 0:
                 moveDirection(true,4);
@@ -60,14 +78,14 @@ public class EnemyBehavior : MonoBehaviour
                 case 2:
                 break;
             }
-        }else if(stateIndex == 1){
+        }else if(enemyState.stateIndex == 1){
             chase();
-        }else if(stateIndex == 2){
+        }else if(enemyState.stateIndex == 2){
             if(coldDownTime==0){
                 attackStart();
                 coldDownTime = -1;
             }else if(coldDownTime>0){
-                stateIndex = 1;
+                enemyState.stateIndex = 1;
             }
         }
         
@@ -75,9 +93,9 @@ public class EnemyBehavior : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collider){
         if(collider.gameObject.tag=="player"){
-            Debug.Log(stateIndex);
-            if(stateIndex == 0){
-                stateIndex = 1;
+            Debug.Log(enemyState.stateIndex);
+            if(enemyState.stateIndex == 0){
+                enemyState.stateIndex = 1;
                 player = collider.gameObject.transform;
             }
         }
@@ -90,7 +108,7 @@ public class EnemyBehavior : MonoBehaviour
 
     private void attackStart(){
         alert.SetActive(true);
-        Invoke("Attack", 0.4f);
+        Invoke("Attack", 0.5f);
     }
     
     private void moveDirection(bool faceRight, float speed){
@@ -120,7 +138,7 @@ public class EnemyBehavior : MonoBehaviour
                 moveDirection(true, -3);
             }
         }else if(System.Math.Abs(rigidbody.transform.position.y-player.position.y)<2){
-            stateIndex = 2;
+            enemyState.stateIndex = 2;
         }
     }
 
@@ -132,8 +150,8 @@ public class EnemyBehavior : MonoBehaviour
 
     private void AttackEnd(){
         es.slashEnd();
-        stateIndex = 1;
-        coldDownTime = 100+Random.Range(0, 100);
+        enemyState.stateIndex = 1;
+        coldDownTime = 50+Random.Range(0, 30);
     }
 
     private void coldDown(){
@@ -145,5 +163,10 @@ public class EnemyBehavior : MonoBehaviour
     private void nextRd(){
         rdFloat = Random.Range(0.0f,1.5f);
         Invoke("nextRd",0.7f);
+    }
+
+    public void setPlayer(Transform playerTransform)
+    {
+        this.player = playerTransform;
     }
 }

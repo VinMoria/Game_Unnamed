@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 858058742614930142}
   - component: {fileID: 858058742614930136}
   - component: {fileID: 858058742614930139}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: MainActorPrefab
   m_TagString: player
   m_Icon: {fileID: 0}
@@ -168,7 +168,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 858058742918241274}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: groundCheck
   m_TagString: Untagged
   m_Icon: {fileID: 5132851093641282708, guid: 0000000000000000d000000000000000, type: 0}
@@ -271,10 +271,25 @@ PrefabInstance:
       propertyPath: m_TagString
       value: Untagged
       objectReference: {fileID: 0}
+    - target: {fileID: 6587808778878878383, guid: ac7afbbcdad0de449806ee54be21c55e,
+        type: 3}
+      propertyPath: m_Layer
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 6587808779083545967, guid: ac7afbbcdad0de449806ee54be21c55e,
+        type: 3}
+      propertyPath: m_Layer
+      value: 12
+      objectReference: {fileID: 0}
     - target: {fileID: 7541695405792315388, guid: ac7afbbcdad0de449806ee54be21c55e,
         type: 3}
       propertyPath: m_TagString
       value: shield
+      objectReference: {fileID: 0}
+    - target: {fileID: 7541695405792315388, guid: ac7afbbcdad0de449806ee54be21c55e,
+        type: 3}
+      propertyPath: m_Layer
+      value: 12
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ac7afbbcdad0de449806ee54be21c55e, type: 3}
@@ -451,6 +466,11 @@ PrefabInstance:
       propertyPath: m_Points.m_Paths.Array.data[0].Array.data[14].y
       value: 3.086899
       objectReference: {fileID: 0}
+    - target: {fileID: 7470019111240209152, guid: b08ae3badaa58e544933fbcf91cd28ef,
+        type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 858058742614930132}
     - target: {fileID: 7928892468219309609, guid: b08ae3badaa58e544933fbcf91cd28ef,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -520,6 +540,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: playerSlash
+      objectReference: {fileID: 0}
+    - target: {fileID: 7928892468219309611, guid: b08ae3badaa58e544933fbcf91cd28ef,
+        type: 3}
+      propertyPath: m_Layer
+      value: 12
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b08ae3badaa58e544933fbcf91cd28ef, type: 3}

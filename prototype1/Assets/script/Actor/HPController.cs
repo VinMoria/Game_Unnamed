@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class HPController : MonoBehaviour
 {
-    private int HP;
+    private float HP;
     public Text HPText;
     void Update()
     {

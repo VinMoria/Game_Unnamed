@@ -16,6 +16,7 @@ public class MovementComponent : ActorComponent
     public override void Init(ActorRoot actor, string actorPath)
     {
         base.Init(actor, actorPath);
+        PlayerState.Instance.Init();
         PlayerState.Instance.playerActionsFreezed = false;
         AddEventListener();
     }
@@ -58,10 +59,6 @@ public class MovementComponent : ActorComponent
 
     public override void FixedUpdate(float fixedUpdateTime)
     {
-        if(PlayerState.Instance.HP<=0&&!PlayerState.Instance.dead){
-            actor.UnInit();
-            PlayerState.Instance.dead = true;
-        }
         base.FixedUpdate(fixedUpdateTime);
         if (!PlayerState.Instance.dead)
         {
@@ -218,6 +215,7 @@ public class MovementComponent : ActorComponent
             if(PlayerState.Instance.activedActionTimeKeeper==10){
                 moveStop();
             }else if(PlayerState.Instance.activedActionTimeKeeper==20){
+                Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer("player"), LayerMask.NameToLayer("enemy"), false);
                 gravityBack();
                 stateNormal();
                 PlayerState.Instance.activedActionTimeKeeper = 0;
@@ -234,6 +232,7 @@ public class MovementComponent : ActorComponent
             InputManager.Instance.btnsPressed["dashBtn"] = false;
             PlayerState.Instance.playerActionsFreezed = true;
             rigidBody.gravityScale = 0;
+            Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer("player"), LayerMask.NameToLayer("enemy"), true);
             if(rigidBody.transform.localScale.x>0){
                 rigidBody.velocity = new Vector2(actor.valueComponent.DashSpeed*Time.deltaTime, 0);
             }else{

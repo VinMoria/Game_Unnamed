@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class PlayerSlash : MonoBehaviour
 {
+    public GameObject player;
     private GameObject slash;
     private bool hit = false;
 
@@ -17,7 +18,7 @@ public class PlayerSlash : MonoBehaviour
         if(collision.gameObject.tag=="Enemy"&&!hit){
             hit = true;
             Debug.Log("hit enemy");
-            collision.gameObject.GetComponent<EnemyBehavior>().hurt();
+            collision.gameObject.GetComponent<EnemyBehavior>().hurt(player, PlayerState.Instance.dmgList);
         }
     }
 

@@ -5,7 +5,7 @@ using UnityEngine;
 public class EnemySlash : MonoBehaviour
 {
     private GameObject slash;
-    public Transform enemy;
+    public GameObject enemy;
     private Rigidbody2D player;
     private bool hit = false;
 
@@ -21,22 +21,23 @@ public class EnemySlash : MonoBehaviour
             player = collider.GetComponent<Rigidbody2D>();
             PlayerState.Instance.activedActionTimeKeeperName = "shockBack";
             player.gravityScale = 6.0f;
+            Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer("player"), LayerMask.NameToLayer("enemy"), false);
             Invoke("shockEnd", 0.1f);
             PlayerState.Instance.playerActionsFreezed = true;
             
-            if(enemy.localScale.x>0){
+            if(enemy.transform.localScale.x>0){
                 player.velocity = new Vector2(600*Time.deltaTime, 600*Time.deltaTime);
             }else{
                 player.velocity = new Vector2(-600*Time.deltaTime, 600*Time.deltaTime);
             }
 
-            PlayerState.Instance.HP -= 20;
+            PlayerState.Instance.hurt(enemy.GetComponent<EnemyBehavior>().enemyState.dmgList, false);
 
         }
         if(collider.transform.tag=="shield"&&!hit){
             hit = true;
             PlayerSoundManager.Instance.shieldSound();
-            PlayerState.Instance.HP -= 10;
+            PlayerState.Instance.hurt(enemy.GetComponent<EnemyState>().dmgList, true);
         }
         if(collider.transform.tag=="parry"&&!hit){
             hit = true;
