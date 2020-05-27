@@ -37,7 +37,7 @@ public class EnemySlash : MonoBehaviour
         if(collider.transform.tag=="shield"&&!hit){
             hit = true;
             PlayerSoundManager.Instance.shieldSound();
-            PlayerState.Instance.hurt(enemy.GetComponent<EnemyState>().dmgList, true);
+            PlayerState.Instance.hurt(enemy.GetComponent<EnemyBehavior>().enemyState.dmgList, true);
         }
         if(collider.transform.tag=="parry"&&!hit){
             hit = true;

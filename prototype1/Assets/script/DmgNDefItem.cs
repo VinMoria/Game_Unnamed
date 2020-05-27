@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DmgNDefItem : ScriptableObject
+public class DmgNDefItem
 {
     public string name;
     public float num;
