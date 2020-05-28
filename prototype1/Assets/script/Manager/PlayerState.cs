@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerState : Singleton<PlayerState>
 {
@@ -10,15 +11,20 @@ public class PlayerState : Singleton<PlayerState>
     public float HP = 100;
     public bool defendOn = false;
     public bool dead = false;
-    public List<DmgNDefItem> dmgList = new List<DmgNDefItem>();
+    public List<DmgNDefItem> slashDmgList = new List<DmgNDefItem>();
+    public List<DmgNDefItem> bulletDmgList = new List<DmgNDefItem>();
+    public List<DmgNDefItem> parryDmgList = new List<DmgNDefItem>();
     public List<DmgNDefItem> defList = new List<DmgNDefItem>();
     public List<DmgNDefItem> shieldDefList = new List<DmgNDefItem>();
 
     public void Init()
     {
-        dmgList.Add(new DmgNDefItem("phy", 20));
-        dmgList.Add(new DmgNDefItem("fire", 20));
-        dmgList.Add(new DmgNDefItem("ice", 5));
+        slashDmgList.Add(new DmgNDefItem("phy", 20));
+        slashDmgList.Add(new DmgNDefItem("fire", 20));
+        slashDmgList.Add(new DmgNDefItem("ice", 5));
+        bulletDmgList.Add(new DmgNDefItem("phy", 10));
+        parryDmgList.Add(new DmgNDefItem("phy", 30));
+        parryDmgList.Add(new DmgNDefItem("ice", 10));
         defList.Add(new DmgNDefItem("phy", 0.2f));
         defList.Add(new DmgNDefItem("fire",0.5f));
         shieldDefList.Add(new DmgNDefItem("phy", 0.8f));
@@ -59,7 +65,7 @@ public class PlayerState : Singleton<PlayerState>
         Debug.Log("player get hurt: " + finalDmg);
         if (HP <= 0)
         {
-            //dead = true;
+            SceneManager.LoadScene("Scene1");
         }
     }
 }

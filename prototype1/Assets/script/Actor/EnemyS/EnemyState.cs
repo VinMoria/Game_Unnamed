@@ -4,8 +4,9 @@ using UnityEngine;
 
 public class EnemyState
 {
-    public int stateIndex = 0;
-    public float HP;
+    public string stateStr = "";
+    public float HP = 120;
     public List<DmgNDefItem> dmgList = new List<DmgNDefItem>();
     public List<DmgNDefItem> defList = new List<DmgNDefItem>();
+    public int[] coldDownTime = new int[10];
 }

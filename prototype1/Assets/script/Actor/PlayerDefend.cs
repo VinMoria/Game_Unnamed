@@ -34,8 +34,10 @@ public class PlayerDefend : MonoBehaviour
         Invoke("parryDown",0.3f);
     }
 
-    private void parryDown(){
+    public void parryDown(){
         parry.SetActive(false);
         PlayerState.Instance.defendOn = false;
+        PlayerState.Instance.playerActionsFreezed = false;
+        PlayerState.Instance.activedActionTimeKeeperName = "";
     }
 }

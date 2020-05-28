@@ -21,7 +21,10 @@ public class PlayerBullet : MonoBehaviour
     }
 
     private void OnCollisionEnter2D(Collision2D collision){
-        Debug.Log("hit sth");
+        if(collision.gameObject.tag == "Enemy")
+        {
+            collision.gameObject.GetComponent<EnemyBehavior>().hurt(PlayerState.Instance.bulletDmgList, "bullet");
+        }
         Destroy(gameObject);
     }
 

@@ -8,9 +8,9 @@ public class EnemyFeeling : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collider)
     {
         if (collider.gameObject.tag == "player"){
-            if (enemy.GetComponent<EnemyBehavior>().enemyState.stateIndex == 0)
+            if (enemy.GetComponent<EnemyBehavior>().enemyState.stateStr == "wander")
             {
-                enemy.GetComponent<EnemyBehavior>().enemyState.stateIndex = 1;
+                enemy.GetComponent<EnemyBehavior>().enemyState.stateStr = "chase";
                 enemy.GetComponent<EnemyBehavior>().setPlayer(collider.gameObject.transform);
             }
         }

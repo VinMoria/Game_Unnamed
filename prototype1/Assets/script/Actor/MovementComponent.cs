@@ -199,12 +199,13 @@ public class MovementComponent : ActorComponent
         if(PlayerState.Instance.activedActionTimeKeeperName=="Defend"){
             PlayerState.Instance.activedActionTimeKeeper+=1;
             if(!InputManager.Instance.btnsPressed["defendBtn"]){
-                if(PlayerState.Instance.activedActionTimeKeeper>10){
+                if(PlayerState.Instance.activedActionTimeKeeper>10&&defendObject.activeSelf){
                     playerDefend.shieldDown();
-                }else{
+                    stateNormal();
+                }
+                else{
                     playerDefend.parryActive();
                 }
-                stateNormal();
             }
         }
     }

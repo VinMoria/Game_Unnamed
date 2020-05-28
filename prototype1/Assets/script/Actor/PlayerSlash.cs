@@ -18,7 +18,7 @@ public class PlayerSlash : MonoBehaviour
         if(collision.gameObject.tag=="Enemy"&&!hit){
             hit = true;
             Debug.Log("hit enemy");
-            collision.gameObject.GetComponent<EnemyBehavior>().hurt(player, PlayerState.Instance.dmgList);
+            collision.gameObject.GetComponent<EnemyBehavior>().hurt(PlayerState.Instance.slashDmgList, "slash");
         }
     }
 

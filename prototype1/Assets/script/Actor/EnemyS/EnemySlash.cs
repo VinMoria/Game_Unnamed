@@ -26,9 +26,9 @@ public class EnemySlash : MonoBehaviour
             PlayerState.Instance.playerActionsFreezed = true;
             
             if(enemy.transform.localScale.x>0){
-                player.velocity = new Vector2(600*Time.deltaTime, 600*Time.deltaTime);
+                player.velocity = new Vector2(800*Time.deltaTime, 400*Time.deltaTime);
             }else{
-                player.velocity = new Vector2(-600*Time.deltaTime, 600*Time.deltaTime);
+                player.velocity = new Vector2(-800*Time.deltaTime, 400*Time.deltaTime);
             }
 
             PlayerState.Instance.hurt(enemy.GetComponent<EnemyBehavior>().enemyState.dmgList, false);
@@ -42,6 +42,9 @@ public class EnemySlash : MonoBehaviour
         if(collider.transform.tag=="parry"&&!hit){
             hit = true;
             PlayerSoundManager.Instance.parrySound();
+            enemy.GetComponent<EnemyBehavior>().hurt(PlayerState.Instance.parryDmgList,"parry");
+            enemy.GetComponent<EnemyBehavior>().enemyState.stateStr = "attack";
+            enemy.GetComponent<EnemyBehavior>().startDizzy();
         }
     }
 

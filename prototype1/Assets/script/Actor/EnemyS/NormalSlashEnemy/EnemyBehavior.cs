@@ -5,18 +5,23 @@ using UnityEngine;
 public class EnemyBehavior : MonoBehaviour
 {
     public GameObject leftPoint,rightPoint,alert;
-    private Rigidbody2D rigidbody;
-    private int coldDownTime = 0;
+    private new Rigidbody2D rigidbody;
     private Transform player;
     private float leftX,rightX;
     private int randomInt;
     EnemySlash es;
+    private string lastState;
     public GameObject slashObject;
+    public GameObject dizzyObject;
     private float rdFloat;
     public EnemyState enemyState;
     void Start()
     {
+        lastState = "wander";
         enemyState = new EnemyState();
+        enemyState.stateStr = "wander";
+        enemyState.coldDownTime[0] = 0;
+        enemyState.coldDownTime[1] = 0;
         nextRd();
         rigidbody = GetComponent<Rigidbody2D>();
         leftX = leftPoint.transform.position.x;
@@ -36,11 +41,15 @@ public class EnemyBehavior : MonoBehaviour
         
     }
 
-    public void hurt(GameObject dmgFrom, List<DmgNDefItem> dmgList){
-        if(enemyState.stateIndex == 0)
+    public void LinkPlayer(Transform playerTransform)
+    {
+        player = playerTransform;
+    }
+
+    public void hurt(List<DmgNDefItem> dmgList, string dmgType){
+        if(enemyState.stateStr == "wander")
         {
-            player = dmgFrom.transform;
-            enemyState.stateIndex = 1;
+            enemyState.stateStr = "chase";
         }
         float finalDmg = 0;
         foreach (DmgNDefItem dmg in dmgList)
@@ -61,44 +70,75 @@ public class EnemyBehavior : MonoBehaviour
         Debug.Log("hurt: "+finalDmg);
         
         if(enemyState.HP<=0){
-            //Destroy(gameObject);
+            Destroy(gameObject);
+        }
+
+        if(dmgType == "bullet")
+        {
+            if (enemyState.stateStr == "attackPre")
+            {
+                alert.SetActive(false);
+                enemyState.coldDownTime[0] = 0;
+                startDizzy();
+            }
         }
     }
 
     void FixedUpdate(){
         coldDown();
-        if(enemyState.stateIndex == 0){
+        if (enemyState.stateStr != lastState)
+        {
+            Debug.Log(enemyState.stateStr);
+            lastState = enemyState.stateStr;
+        }
+        if(enemyState.stateStr == "wander"){
             switch(randomInt){
                 case 0:
-                moveDirection(true,4);
-                break;
+                    moveDirection(true,4);
+                    break;
+
                 case 1:
-                moveDirection(false,-4);
-                break;
+                    moveDirection(false,-4);
+                    break;
+
                 case 2:
-                break;
+                    break;
             }
-        }else if(enemyState.stateIndex == 1){
+        }else if(enemyState.stateStr == "chase"){
             chase();
-        }else if(enemyState.stateIndex == 2){
-            if(coldDownTime==0){
+        }else if(enemyState.stateStr == "attackPre"){
+            if(enemyState.coldDownTime[0]==0){
                 attackStart();
-                coldDownTime = -1;
-            }else if(coldDownTime>0){
-                enemyState.stateIndex = 1;
+                enemyState.coldDownTime[0] = -1;
+            }else if(enemyState.coldDownTime[0] > 0){
+                enemyState.stateStr = "chase";
             }
+        }else if(enemyState.stateStr == "dizzy")
+        {
+
         }
         
     }
 
     private void OnTriggerEnter2D(Collider2D collider){
         if(collider.gameObject.tag=="player"){
-            Debug.Log(enemyState.stateIndex);
-            if(enemyState.stateIndex == 0){
-                enemyState.stateIndex = 1;
-                player = collider.gameObject.transform;
+            if(enemyState.stateStr == "wander"){
+                enemyState.stateStr = "chase";
             }
         }
+    }
+
+    public void startDizzy()
+    {
+        dizzyObject.SetActive(true);
+        enemyState.stateStr = "dizzy";
+        Invoke("endDizzy",2.0f);
+    }
+
+    public void endDizzy()
+    {
+        dizzyObject.SetActive(false);
+        enemyState.stateStr = "chase";
     }
 
     private void nextMove(){
@@ -107,6 +147,14 @@ public class EnemyBehavior : MonoBehaviour
     }
 
     private void attackStart(){
+        if(rigidbody.transform.position.x < player.position.x)
+        {
+            rigidbody.transform.localScale = new Vector3(System.Math.Abs(rigidbody.transform.localScale.x), rigidbody.transform.localScale.y, rigidbody.transform.localScale.z);
+        }
+        else
+        {
+            rigidbody.transform.localScale = new Vector3(-System.Math.Abs(rigidbody.transform.localScale.x), rigidbody.transform.localScale.y, rigidbody.transform.localScale.z);
+        }
         alert.SetActive(true);
         Invoke("Attack", 0.5f);
     }
@@ -123,7 +171,10 @@ public class EnemyBehavior : MonoBehaviour
     }
 
     private void chase(){
-        if(System.Math.Abs(rigidbody.transform.position.x-player.position.x)>(2.5+rdFloat)){
+        if(System.Math.Abs(rigidbody.transform.position.x - player.position.x) > (15 + rdFloat))
+        {
+            enemyState.stateStr = "wander";
+        }else if(System.Math.Abs(rigidbody.transform.position.x-player.position.x)>(2.5+rdFloat)){
             if(rigidbody.transform.position.x>player.position.x){
                 moveDirection(false, -6);
             }else{
@@ -138,25 +189,36 @@ public class EnemyBehavior : MonoBehaviour
                 moveDirection(true, -3);
             }
         }else if(System.Math.Abs(rigidbody.transform.position.y-player.position.y)<2){
-            enemyState.stateIndex = 2;
+            enemyState.stateStr = "attackPre";
         }
     }
 
     private void Attack(){
-        alert.SetActive(false);
-        es.slashOn();
-        Invoke("AttackEnd", 0.2f);
+        if(enemyState.stateStr == "attackPre")
+        {
+            enemyState.stateStr = "attack";
+            alert.SetActive(false);
+            es.slashOn();
+            Invoke("AttackEnd", 0.2f);
+        }
     }
 
     private void AttackEnd(){
         es.slashEnd();
-        enemyState.stateIndex = 1;
-        coldDownTime = 50+Random.Range(0, 30);
+        if (enemyState.stateStr == "attack")
+        {
+            enemyState.stateStr = "chase";
+        }
+        enemyState.coldDownTime[0] = 50+Random.Range(0, 30);
     }
 
     private void coldDown(){
-        if(coldDownTime>0){
-            coldDownTime--;
+        for(int i = 0; i < 1; i++)
+        {
+            if (enemyState.coldDownTime[i] > 0)
+            {
+                enemyState.coldDownTime[i]--;
+            }
         }
     }
 

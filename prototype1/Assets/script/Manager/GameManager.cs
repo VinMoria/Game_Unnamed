@@ -43,9 +43,21 @@ public class GameManager : MonoBehaviour
     {
         ActorRoot actor = ActorManager.Instance.CreateActor(actorPath);
         actor.SetLocation(spawnPoint.transform.position);
-
         hostActor = actor;
-
         CameraManager.Instance.LookAtActor(actor);
+
+        LinkEnemy(actor);
+    }
+
+    private void LinkEnemy(ActorRoot actor)
+    {
+        GameObject[] obj = FindObjectsOfType(typeof(GameObject)) as GameObject[];
+        foreach (GameObject child in obj)    //遍历所有gameobject
+        {
+            if (child.gameObject.tag == "Enemy")
+            {
+                child.GetComponent<EnemyBehavior>().LinkPlayer(actor.GetTransform());
+            }
+        }
     }
 }
