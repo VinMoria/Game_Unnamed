@@ -74,11 +74,9 @@ public class InputManager : Singleton<InputManager>
     private void MouseDownTrigger(int MouseName, string ActName){
         if(Input.GetMouseButtonDown(MouseName)){
             btnsPressed[ActName] = true;
-            Debug.Log("press mouse");
         }
         if(Input.GetMouseButtonUp(MouseName)){
             btnsPressed[ActName] = false;
-            Debug.Log("release mouse");
         }
     }
 }

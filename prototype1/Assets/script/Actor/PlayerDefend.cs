@@ -5,17 +5,28 @@ using UnityEngine;
 public class PlayerDefend : MonoBehaviour
 {
     GameObject parry,shield;
+    public AudioSource audioSource;
+    private AudioClip shieldClip, parryClip;
     void Start()
     {
         shield = GetComponentsInChildren<Transform>()[1].gameObject;
         parry = GetComponentsInChildren<Transform>()[2].gameObject;
         shield.SetActive(false);
         parry.SetActive(false);
+        parryClip = Resources.Load<AudioClip>("soundRes/parrySound");
+        shieldClip = Resources.Load<AudioClip>("soundRes/shieldSound");
     }
 
-    void Update()
+    public void parrySound()
     {
-        
+        audioSource.clip = parryClip;
+        audioSource.Play();
+    }
+
+    public void shieldSound()
+    {
+        audioSource.clip = shieldClip;
+        audioSource.Play();
     }
 
     public void shieldOn(){

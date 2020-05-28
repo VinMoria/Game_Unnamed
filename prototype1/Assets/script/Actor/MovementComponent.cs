@@ -127,8 +127,6 @@ public class MovementComponent : ActorComponent
             PlayerState.Instance.activedActionTimeKeeper = 0;
             PlayerState.Instance.playerActionsFreezed = true;
             rigidBody.velocity = new Vector2(0,0);
-            //rigidBody.gravityScale = 0;
-            PlayerSoundManager.Instance.slashSound();
             playerSlash.slashOn();
         }
     }

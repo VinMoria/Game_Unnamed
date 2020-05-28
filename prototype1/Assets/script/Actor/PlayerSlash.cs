@@ -5,13 +5,17 @@ using UnityEngine;
 public class PlayerSlash : MonoBehaviour
 {
     public GameObject player;
+    public AudioSource audioSource;
+    private AudioClip slashClip;
     private GameObject slash;
     private bool hit = false;
 
     void Start()
     {
-        slash = GetComponent<Transform>().gameObject;
+        slash = GetComponentsInChildren<Transform>()[1].gameObject;
         slash.SetActive(false);
+        slashClip = Resources.Load<AudioClip>("soundRes/slashSound");
+        audioSource.clip = slashClip;
     }
 
     private void OnTriggerEnter2D(Collider2D collision){
@@ -28,7 +32,8 @@ public class PlayerSlash : MonoBehaviour
     }
 
     public void slashOn(){
+        audioSource.Play();
         slash.SetActive(true);
-        Invoke("slashEnd", 0.2f);
+        Invoke("slashEnd", 0.3f);
     }
 }

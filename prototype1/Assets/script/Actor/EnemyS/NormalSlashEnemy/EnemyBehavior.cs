@@ -10,14 +10,12 @@ public class EnemyBehavior : MonoBehaviour
     private float leftX,rightX;
     private int randomInt;
     EnemySlash es;
-    private string lastState;
     public GameObject slashObject;
     public GameObject dizzyObject;
     private float rdFloat;
     public EnemyState enemyState;
     void Start()
     {
-        lastState = "wander";
         enemyState = new EnemyState();
         enemyState.stateStr = "wander";
         enemyState.coldDownTime[0] = 0;
@@ -86,11 +84,6 @@ public class EnemyBehavior : MonoBehaviour
 
     void FixedUpdate(){
         coldDown();
-        if (enemyState.stateStr != lastState)
-        {
-            Debug.Log(enemyState.stateStr);
-            lastState = enemyState.stateStr;
-        }
         if(enemyState.stateStr == "wander"){
             switch(randomInt){
                 case 0:
