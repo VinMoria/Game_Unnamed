@@ -15,7 +15,9 @@ public class InputManager : Singleton<InputManager>
         btnsPressed.Add("slashBtn", false);
         btnsPressed.Add("shotBtn", false);
         btnsPressed.Add("defendBtn", false);
+        btnsPressed.Add("interactBtn", false);
         axisBtn.Add("axis3", false);
+        axisBtn.Add("axis3Rev", false);
     }
 
     public void Update(float delta)
@@ -35,11 +37,13 @@ public class InputManager : Singleton<InputManager>
         BtnDownTrigger("btn2","slashBtn");
         BtnDownTrigger("btn3","shotBtn");
         BtnDownAxis("axis3","defendBtn");
+        BtnDownAxisRev("axis3Rev", "interactBtn");
 
         BtnDownTrigger("space","jumpBtn");
         BtnDownTrigger("shift","dashBtn");
         MouseDownTrigger(0,"slashBtn");
-        BtnDownTrigger("q","shotBtn");
+        BtnDownTrigger("e","shotBtn");
+        BtnDownTrigger("x", "interactBtn");
         MouseDownTrigger(1,"defendBtn");
     }
 
@@ -49,6 +53,20 @@ public class InputManager : Singleton<InputManager>
         }
         if(Input.GetButtonUp(btnName)){
             btnsPressed[ActName] = false;
+        }
+    }
+
+    private void BtnDownAxisRev(string axisName, string ActName)
+    {
+        if (Input.GetAxis(axisName) < 0 && !axisBtn[axisName])
+        {
+            btnsPressed[ActName] = true;
+            axisBtn[axisName] = true;
+        }
+        else if (Input.GetAxis(axisName) == 0 && axisBtn[axisName])
+        {
+            btnsPressed[ActName] = false;
+            axisBtn[axisName] = false;
         }
     }
 

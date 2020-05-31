@@ -7,12 +7,13 @@ TagManager:
   - Enemy
   - ground
   - platform
-  - switch
   - player
   - breath
   - wall
   - shield
   - parry
+  - playerSlash
+  - playerBullet
   layers:
   - Default
   - TransparentFX

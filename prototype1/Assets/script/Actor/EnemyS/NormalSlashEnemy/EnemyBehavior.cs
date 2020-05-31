@@ -119,6 +119,10 @@ public class EnemyBehavior : MonoBehaviour
                 enemyState.stateStr = "chase";
             }
         }
+        if(collider.gameObject.tag == "playerSlash")
+        {
+            hurt(PlayerState.Instance.slashDmgList, "slash");
+        }
     }
 
     public void startDizzy()

@@ -765,6 +765,11 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 12
       objectReference: {fileID: 0}
+    - target: {fileID: 7928892468219309611, guid: b08ae3badaa58e544933fbcf91cd28ef,
+        type: 3}
+      propertyPath: m_TagString
+      value: playerSlash
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 7470019111240209152, guid: b08ae3badaa58e544933fbcf91cd28ef, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: b08ae3badaa58e544933fbcf91cd28ef, type: 3}

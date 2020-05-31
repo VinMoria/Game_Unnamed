@@ -8,7 +8,6 @@ public class PlayerSlash : MonoBehaviour
     public AudioSource audioSource;
     private AudioClip slashClip;
     private GameObject slash;
-    private bool hit = false;
 
     void Start()
     {
@@ -18,17 +17,8 @@ public class PlayerSlash : MonoBehaviour
         audioSource.clip = slashClip;
     }
 
-    private void OnTriggerEnter2D(Collider2D collision){
-        if(collision.gameObject.tag=="Enemy"&&!hit){
-            hit = true;
-            Debug.Log("hit enemy");
-            collision.gameObject.GetComponent<EnemyBehavior>().hurt(PlayerState.Instance.slashDmgList, "slash");
-        }
-    }
-
     private void slashEnd(){
         slash.SetActive(false);
-        hit = false;
     }
 
     public void slashOn(){
