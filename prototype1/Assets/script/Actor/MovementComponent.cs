@@ -1,10 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.Animations;
 
 public class MovementComponent : ActorComponent
 {
     private Rigidbody2D rigidBody;
+    private Animator animator;
     GameObject defendObject,slashObject;
     Vector2 pos;
     private PlayerDefend playerDefend;
@@ -24,6 +26,7 @@ public class MovementComponent : ActorComponent
     public override void Prepare()
     {
         base.Prepare();
+        animator = actor.GetComponent<Animator>();
         rigidBody = actor.GetComponent<Rigidbody2D>();
         coldDownTimes[0] = 0; //dash
         coldDownTimes[1] = 0; //bullet
@@ -70,6 +73,10 @@ public class MovementComponent : ActorComponent
                 Shot(fixedUpdateTime);
                 Slash(fixedUpdateTime);
                 Defend(fixedUpdateTime);
+                if (!actor.collisionComponent.getOnGround())
+                {
+                    AirAnimation();
+                }
             }
             else
             {
@@ -80,6 +87,11 @@ public class MovementComponent : ActorComponent
             }
             coldDown();
         }
+        else
+        {
+            animator.SetInteger("stateIndex", 8);
+            moveStop();
+        }
     }
 
     private void Move(float deltaTime)
@@ -88,14 +100,23 @@ public class MovementComponent : ActorComponent
 
         if (moveAxisVal > 0)
         {
+            if (actor.collisionComponent.getOnGround())
+            {
+                animator.SetInteger("stateIndex", 1);
+            }
             rigidBody.velocity = new Vector2(sign * actor.valueComponent.MoveSpeed * deltaTime, rigidBody.velocity.y);
         }
         else if (moveAxisVal < 0)
         {
+            if (actor.collisionComponent.getOnGround())
+            {
+                animator.SetInteger("stateIndex", 1);
+            }
             rigidBody.velocity = new Vector2(sign * actor.valueComponent.MoveSpeed * deltaTime, rigidBody.velocity.y);
         }
         else
         {
+            animator.SetInteger("stateIndex", 0);
             rigidBody.velocity = new Vector2(0, rigidBody.velocity.y);
         }
 
@@ -121,6 +142,7 @@ public class MovementComponent : ActorComponent
 
     private void Slash(float deltaTime){
         if(InputManager.Instance.btnsPressed["slashBtn"]&&coldDownTimes[2]==0){
+            animator.SetInteger("stateIndex", 3);
             InputManager.Instance.btnsPressed["slashBtn"] = false;
             PlayerState.Instance.activedActionTimeKeeperName = "Slash";
             coldDownTimes[2] = 20;
@@ -189,12 +211,14 @@ public class MovementComponent : ActorComponent
             PlayerState.Instance.playerActionsFreezed = true;
             rigidBody.velocity = new Vector2(0,0);
             playerDefend.shieldOn();
+            animator.SetInteger("stateIndex", 4);
             coldDownTimes[3] = 40;
         }
     }
 
     private void DefendEnd(float deltaTime){
-        if(PlayerState.Instance.activedActionTimeKeeperName=="Defend"){
+        if(PlayerState.Instance.activedActionTimeKeeperName=="Defend"|| PlayerState.Instance.activedActionTimeKeeperName == "DefendHit")
+        {
             PlayerState.Instance.activedActionTimeKeeper+=1;
             if(!InputManager.Instance.btnsPressed["defendBtn"]){
                 if(PlayerState.Instance.activedActionTimeKeeper>10&&defendObject.activeSelf){
@@ -202,7 +226,11 @@ public class MovementComponent : ActorComponent
                     stateNormal();
                 }
                 else{
-                    playerDefend.parryActive();
+                    if(PlayerState.Instance.activedActionTimeKeeperName == "Defend")
+                    {
+                        animator.SetInteger("stateIndex", 5);
+                        playerDefend.parryActive();
+                    }
                 }
             }
         }
@@ -226,6 +254,7 @@ public class MovementComponent : ActorComponent
     private void Dash(float deltaTime){
         if(InputManager.Instance.btnsPressed["dashBtn"]&&(actor.collisionComponent.getOnGround()||actor.collisionComponent.getAirActions()["airDash"])&&coldDownTimes[0]==0){
             PlayerState.Instance.activedActionTimeKeeperName = "Dash";
+            animator.SetInteger("stateIndex", 2);
             coldDownTimes[0] = 30;
             PlayerState.Instance.activedActionTimeKeeper = 0;
             InputManager.Instance.btnsPressed["dashBtn"] = false;
@@ -273,4 +302,14 @@ public class MovementComponent : ActorComponent
         }
     }
 
+    private void AirAnimation()
+    {
+        if (rigidBody.velocity.y > 0)
+        {
+            animator.SetInteger("stateIndex", 6);
+        }else if (rigidBody.velocity.y < 0)
+        {
+            animator.SetInteger("stateIndex", 7);
+        }
+    }
 }

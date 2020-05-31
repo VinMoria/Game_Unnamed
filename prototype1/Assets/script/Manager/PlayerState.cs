@@ -65,7 +65,8 @@ public class PlayerState : Singleton<PlayerState>
         Debug.Log("player get hurt: " + finalDmg);
         if (HP <= 0)
         {
-            SceneManager.LoadScene("Scene1");
+            dead = true;
+            playerActionsFreezed = true;
         }
     }
 }

@@ -36,6 +36,7 @@ public class EnemySlash : MonoBehaviour
         }
         if(collider.transform.tag=="shield"&&!hit){
             hit = true;
+            PlayerState.Instance.activedActionTimeKeeperName = "DefendHit";
             collider.gameObject.GetComponentInParent<PlayerDefend>().shieldSound();
             PlayerState.Instance.hurt(enemy.GetComponent<EnemyBehavior>().enemyState.dmgList, true);
         }
