@@ -153,7 +153,8 @@ public class EnemyBehavior : MonoBehaviour
             rigidbody.transform.localScale = new Vector3(-System.Math.Abs(rigidbody.transform.localScale.x), rigidbody.transform.localScale.y, rigidbody.transform.localScale.z);
         }
         alert.SetActive(true);
-        Invoke("Attack", 0.5f);
+        Invoke("Slash", 0.5f);
+        Invoke("Shot", 0.5f);
     }
     
     private void moveDirection(bool faceRight, float speed){
@@ -190,7 +191,7 @@ public class EnemyBehavior : MonoBehaviour
         }
     }
 
-    private void Attack(){
+    private void Slash(){
         if(enemyState.stateStr == "attackPre")
         {
             enemyState.stateStr = "attack";
@@ -198,6 +199,29 @@ public class EnemyBehavior : MonoBehaviour
             es.slashOn();
             Invoke("AttackEnd", 0.2f);
         }
+    }
+
+    private void Shot()
+    {
+        enemyState.stateStr = "attack";
+        alert.SetActive(false);
+        Vector2 pos;
+        if (GetComponent<Rigidbody2D>().transform.localScale.x > 0)
+        {
+            pos = new Vector2(GetComponent<Rigidbody2D>().position.x + 0.8f, GetComponent<Rigidbody2D>().position.y);
+        }
+        else
+        {
+            pos = new Vector2(GetComponent<Rigidbody2D>().position.x - 0.8f, GetComponent<Rigidbody2D>().position.y);
+        }
+
+        GameObject bulletObject = Object.Instantiate(Resources.Load<GameObject>("Prefabs/ActorPrefabs/enemyBullet"));
+        bulletObject.transform.position = pos;
+        bulletObject.transform.name = "enemyBullet";
+        EnemyBullet eb = bulletObject.GetComponent<EnemyBullet>();
+        eb.setPlayerPosition(player.position);
+
+        Invoke("AttackEnd", 0.2f);
     }
 
     private void AttackEnd(){
