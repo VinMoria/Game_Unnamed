@@ -31,14 +31,23 @@ public class EnemySlash : MonoBehaviour
                 player.velocity = new Vector2(-800*Time.deltaTime, 400*Time.deltaTime);
             }
 
-            PlayerState.Instance.hurt(enemy.GetComponent<EnemyBehavior>().enemyState.dmgList, false);
+            PlayerState.Instance.hurt(enemy.GetComponent<EnemyBehavior>().enemyState.dmgList);
 
         }
         if(collider.transform.tag=="shield"&&!hit){
             hit = true;
             PlayerState.Instance.activedActionTimeKeeperName = "DefendHit";
             collider.gameObject.GetComponentInParent<PlayerDefend>().shieldSound();
-            PlayerState.Instance.hurt(enemy.GetComponent<EnemyBehavior>().enemyState.dmgList, true);
+            if (PlayerState.Instance.MP > PlayerState.Instance.shieldMP) {
+                PlayerState.Instance.useMP(PlayerState.Instance.shieldMP);
+            }
+            else
+            {
+                PlayerState.Instance.useMP(PlayerState.Instance.shieldMP);
+                collider.gameObject.GetComponentInParent<PlayerDefend>().shieldDown();
+                PlayerState.Instance.playerActionsFreezed = false;
+                PlayerState.Instance.activedActionTimeKeeperName = "";
+            }
         }
         if(collider.transform.tag=="parry"&&!hit){
             hit = true;
@@ -46,6 +55,7 @@ public class EnemySlash : MonoBehaviour
             PlayerSoundManager.Instance.parrySound();
             enemy.GetComponent<EnemyBehavior>().hurt(PlayerState.Instance.parryDmgList,"parry");
             enemy.GetComponent<EnemyBehavior>().enemyState.stateStr = "attack";
+            PlayerState.Instance.useMP(-PlayerState.Instance.shieldMP);
             enemy.GetComponent<EnemyBehavior>().startDizzy();
         }
     }

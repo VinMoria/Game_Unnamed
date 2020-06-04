@@ -154,7 +154,7 @@ public class EnemyBehavior : MonoBehaviour
         }
         alert.SetActive(true);
         Invoke("Slash", 0.5f);
-        Invoke("Shot", 0.5f);
+        //Invoke("Shot", 0.5f);
     }
     
     private void moveDirection(bool faceRight, float speed){

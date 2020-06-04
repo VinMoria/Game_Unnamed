@@ -27,12 +27,10 @@ public class EnemyBullet : MonoBehaviour
             if (x < 0)
             {
                 angle = Mathf.Atan(y / x) * 180 / Mathf.PI + 90;
-                Debug.Log(angle);
             }
             else
             {
                 angle = Mathf.Atan(y / x) * 180 / Mathf.PI - 90;
-                Debug.Log(angle);
             }
             
         }

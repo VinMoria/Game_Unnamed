@@ -20,6 +20,7 @@ public class MovementComponent : ActorComponent
         base.Init(actor, actorPath);
         PlayerState.Instance.Init();
         PlayerState.Instance.playerActionsFreezed = false;
+        PlayerState.Instance.stingDmgCheckPoint = actor.GetLocation();
         AddEventListener();
     }
 
@@ -65,6 +66,10 @@ public class MovementComponent : ActorComponent
         base.FixedUpdate(fixedUpdateTime);
         if (!PlayerState.Instance.dead)
         {
+            if (PlayerState.Instance.MP!=PlayerState.Instance.MaxMP)
+            {
+                PlayerState.Instance.useMP(-0.05f);
+            }
             if (!PlayerState.Instance.playerActionsFreezed)
             {
                 Move(fixedUpdateTime);
@@ -166,7 +171,8 @@ public class MovementComponent : ActorComponent
     }
 
     private void Shot(float deltaTime){
-        if(InputManager.Instance.btnsPressed["shotBtn"]&&coldDownTimes[1]==0){
+        if(InputManager.Instance.btnsPressed["shotBtn"]&&coldDownTimes[1]==0&&PlayerState.Instance.MP>= PlayerState.Instance.shotMP){
+            PlayerState.Instance.useMP(PlayerState.Instance.shotMP);
             InputManager.Instance.btnsPressed["shotBtn"] = false;
             PlayerState.Instance.activedActionTimeKeeperName = "Shot";
             coldDownTimes[1] = 50;
@@ -205,7 +211,7 @@ public class MovementComponent : ActorComponent
     }
     
     private void Defend(float deltaTime){
-        if(InputManager.Instance.btnsPressed["defendBtn"]&&coldDownTimes[3]==0){
+        if(InputManager.Instance.btnsPressed["defendBtn"]&&coldDownTimes[3]==0&&PlayerState.Instance.MP>= PlayerState.Instance.shieldMP){
             PlayerState.Instance.activedActionTimeKeeperName = "Defend";
             PlayerState.Instance.activedActionTimeKeeper = 0;
             PlayerState.Instance.playerActionsFreezed = true;
@@ -217,6 +223,11 @@ public class MovementComponent : ActorComponent
     }
 
     private void DefendEnd(float deltaTime){
+        if (PlayerState.Instance.MP == 0)
+        {
+            playerDefend.shieldDown();
+            stateNormal();
+        }
         if(PlayerState.Instance.activedActionTimeKeeperName=="Defend"|| PlayerState.Instance.activedActionTimeKeeperName == "DefendHit")
         {
             PlayerState.Instance.activedActionTimeKeeper+=1;
