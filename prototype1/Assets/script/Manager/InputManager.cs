@@ -2,36 +2,33 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class InputManager : Singleton<InputManager>
+public class InputManager:MonoBehaviour
 {
-    private float moveAxisVal = 0;
     public Dictionary<string, bool> btnsPressed = new Dictionary<string, bool>();
-    private Dictionary<string, bool> axisBtn = new Dictionary<string, bool>();
+    private Dictionary<string, bool> axisBtn = new Dictionary<string, bool>();//获取LRT时的Flag
+    public Dictionary<string, int> axisValue = new Dictionary<string, int>();
+    private bool initFinish = false;
 
-    public void InitManager()
+    public void Start()
     {
-        btnsPressed.Add("jumpBtn", false);
-        btnsPressed.Add("dashBtn", false);
-        btnsPressed.Add("slashBtn", false);
-        btnsPressed.Add("shotBtn", false);
-        btnsPressed.Add("defendBtn", false);
-        btnsPressed.Add("interactBtn", false);
-        axisBtn.Add("axis3", false);
-        axisBtn.Add("axis3Rev", false);
+        if (!initFinish)
+        {
+            btnsPressed.Add("jumpBtn", false);
+            btnsPressed.Add("dashBtn", false);
+            btnsPressed.Add("slashBtn", false);
+            btnsPressed.Add("shotBtn", false);
+            btnsPressed.Add("defendBtn", false);
+            btnsPressed.Add("interactBtn", false);
+            axisBtn.Add("axis3", false);
+            axisBtn.Add("axis3Rev", false);
+            axisValue.Add("moveAxis", 0);
+            initFinish = true;
+        }
     }
 
-    public void Update(float delta)
+    public void Update()
     {
-        if (Input.GetAxisRaw("axis1") != moveAxisVal)
-        {
-            moveAxisVal = Input.GetAxisRaw("axis1");
-
-            MoveAxisEventParam param;
-            param.value = moveAxisVal;
-
-            CGameEventManager.Instance.SendEvent<MoveAxisEventParam>(enGameEvent.MoveAxisEvent, ref param);
-        }
-
+        AxisSetValue("axis1", "moveAxis");
         BtnDownTrigger("btn0","jumpBtn");
         BtnDownTrigger("btn1","dashBtn");
         BtnDownTrigger("btn2","slashBtn");
@@ -95,6 +92,21 @@ public class InputManager : Singleton<InputManager>
         }
         if(Input.GetMouseButtonUp(MouseName)){
             btnsPressed[ActName] = false;
+        }
+    }
+
+    private void AxisSetValue(string axisName, string ActName)
+    {
+        if (Input.GetAxisRaw(axisName) > 0)
+        {
+            axisValue[ActName] = 1;
+        }else if (Input.GetAxisRaw(axisName) < 0)
+        {
+            axisValue[ActName] = -1;
+        }
+        else
+        {
+            axisValue[ActName] = 0;
         }
     }
 }

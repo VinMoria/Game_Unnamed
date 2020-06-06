@@ -7,6 +7,12 @@ public class TeleportObjectBehavior : MonoBehaviour
     public GameObject hint;
     private Transform player;
     public Transform teleportPoint;
+    private InputManager inputManager;
+
+    private void Start()
+    {
+        inputManager = GameObject.Find("GameManager").GetComponent<InputManager>();
+    }
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if(collision.gameObject.tag == "player")
@@ -28,7 +34,7 @@ public class TeleportObjectBehavior : MonoBehaviour
     {
         if (hint.activeSelf)
         {
-            if (InputManager.Instance.btnsPressed["interactBtn"])
+            if (inputManager.btnsPressed["interactBtn"])
             {
                 player.position = teleportPoint.position;
             }

@@ -16,6 +16,7 @@ public class EnemyBehavior : MonoBehaviour
     public EnemyState enemyState;
     void Start()
     {
+        player = GameObject.Find("Player").transform;
         enemyState = new EnemyState();
         enemyState.stateStr = "wander";
         enemyState.coldDownTime[0] = 0;
@@ -37,11 +38,6 @@ public class EnemyBehavior : MonoBehaviour
     void Update()
     {
         
-    }
-
-    public void LinkPlayer(Transform playerTransform)
-    {
-        player = playerTransform;
     }
 
     public void hurt(List<DmgNDefItem> dmgList, string dmgType){
@@ -169,7 +165,7 @@ public class EnemyBehavior : MonoBehaviour
     }
 
     private void chase(){
-        if(System.Math.Abs(rigidbody.transform.position.x - player.position.x) > (15 + rdFloat))
+        if(player!=null&&System.Math.Abs(rigidbody.transform.position.x - player.position.x) > (15 + rdFloat))
         {
             enemyState.stateStr = "wander";
         }else if(System.Math.Abs(rigidbody.transform.position.x-player.position.x)>(2.5+rdFloat)){

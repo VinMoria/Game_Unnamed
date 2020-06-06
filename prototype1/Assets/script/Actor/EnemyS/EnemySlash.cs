@@ -52,7 +52,6 @@ public class EnemySlash : MonoBehaviour
         if(collider.transform.tag=="parry"&&!hit){
             hit = true;
             collider.gameObject.GetComponentInParent<PlayerDefend>().parrySound();
-            PlayerSoundManager.Instance.parrySound();
             enemy.GetComponent<EnemyBehavior>().hurt(PlayerState.Instance.parryDmgList,"parry");
             enemy.GetComponent<EnemyBehavior>().enemyState.stateStr = "attack";
             PlayerState.Instance.useMP(-PlayerState.Instance.shieldMP);
